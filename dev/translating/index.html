@@ -3702,7 +3702,7 @@ Javadoc 的译本会在生成时<strong>顶替源文件</strong>，跟不上原�
 </code></pre></div>
 <p>它把两边的注释全部剥掉，再逐字比对剩下的代码。任何差异都会失败，
 因此同时挡住两类问题 ——「译者顺手改了代码」和「原文变了、译本没跟」。
-CI 在每个 PR 上都会跑。</p>
+<strong>提交前自己跑一遍</strong> —— 这个仓库没有 CI 帮你兜底。</p>
 <p>报错时它会指出第一处分歧的上下文。处理办法看是哪一类：</p>
 <ul>
 <li>译本动了代码 → 改回去</li>
@@ -3915,8 +3915,8 @@ packetevents、Gradle、以及一切配置键名（<code>camera-roll.yml</code>�
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>docs(i18n/en): 同步 configuration 到最新原文
 </code></pre></div>
 <p>PR 里说明清楚<strong>翻了哪些页</strong>、<strong>是新译还是同步</strong>即可。
-翻译不需要跑插件的测试套件，CI 会自动校验文档站能不能构建、
-Javadoc 覆盖层有没有跑偏。</p>
+翻译不需要跑插件的测试套件，但<strong>提交前请跑一次</strong> <code>bun run check</code>
+（翻译结构 + Javadoc 覆盖层 + 严格模式构建）—— 文档这条链路没有 CI 兜底。</p>
 
 
 

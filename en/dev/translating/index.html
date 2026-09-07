@@ -3720,7 +3720,8 @@ bodies — not one byte. Rewrite only what is inside <code>/** */</code>, <code>
 </code></pre></div>
 <p>It strips every comment from both files and compares what is left, byte for byte. Any
 difference fails, which catches both "the translator edited code" and "the original
-changed and this translation is stale". CI runs it on every PR.</p>
+changed and this translation is stale". <strong>Run it yourself before submitting</strong> — this
+repository has no CI to catch it for you.</p>
 <p>When it fails it prints the context around the first difference. What to do depends on
 which case it is:</p>
 <ul>
@@ -3940,8 +3941,9 @@ Translation commits use the <code>docs</code> prefix with the language in parent
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>docs(i18n/en): sync configuration with the latest original
 </code></pre></div>
 <p>In the PR, say <strong>which pages</strong> you translated and whether they are <strong>new or a sync</strong>.
-Translations don't need the plugin test suite; CI checks the docs site builds and that the
-Javadoc overlay hasn't drifted.</p>
+Translations don't need the plugin test suite, but <strong>do run</strong> <code>bun run check</code> before
+submitting (translation structure + Javadoc overlay + strict build) — there is no CI
+backing up this path.</p>
 
 
 

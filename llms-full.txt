@@ -11239,7 +11239,7 @@ bun run javadoc:check
 
 它把两边的注释全部剥掉，再逐字比对剩下的代码。任何差异都会失败，
 因此同时挡住两类问题 ——「译者顺手改了代码」和「原文变了、译本没跟」。
-CI 在每个 PR 上都会跑。
+**提交前自己跑一遍** —— 这个仓库没有 CI 帮你兜底。
 
 报错时它会指出第一处分歧的上下文。处理办法看是哪一类：
 
@@ -11356,8 +11356,8 @@ docs(i18n/en): 同步 configuration 到最新原文
 ```
 
 PR 里说明清楚**翻了哪些页**、**是新译还是同步**即可。
-翻译不需要跑插件的测试套件，CI 会自动校验文档站能不能构建、
-Javadoc 覆盖层有没有跑偏。
+翻译不需要跑插件的测试套件，但**提交前请跑一次** `bun run check`
+（翻译结构 + Javadoc 覆盖层 + 严格模式构建）—— 文档这条链路没有 CI 兜底。
 
 <!-- dev/export.md -->
 
@@ -11886,13 +11886,21 @@ https://gtedd.github.io/GTRigidPhysics/           Maven 仓库（同一个地址
 | 工作流 | 触发 | 做什么 |
 |---|---|---|
 | `build.yml` | 改了源码 | 编译、跑测试、校验 API 文档、验证发布产物可生成 |
-| `docs.yml` | 改了 `docs/**` 等 | 翻译结构校验 + 严格模式构建（死链会红） |
-| `javadoc.yml` | 改了 `*/src/main/java/**` 或译文覆盖层 | 译文覆盖层校验 + doclint + 生成聚合文档 |
 | `release.yml` | 打了 `v*` tag | 建 GitHub Release |
 
-四条都把产物上传成 artifact，但**没有一条会往公开仓库推**。
+两条都把产物上传成 artifact，但**没有一条会往公开仓库推**。
 
-!!! note "为什么不做成自动的"
+曾经还有 `docs.yml`（文档站校验）与 `javadoc.yml`（Javadoc 校验）两条，
+2026-09 移除 —— 它们在这个组织仓库上持续失败并发通知，而排查要看
+Actions 日志。**文档相关的校验现在只在本地跑**：
+
+```bash
+bun run check     # 翻译结构 + Javadoc 覆盖层 + 严格模式构建，一把梭
+```
+
+提交文档改动前跑它。少了 CI 兜底，这条命令就是唯一的门禁。
+
+!!! note "为什么发布也不做成自动的"
 
     跨仓库推送用不了 `GITHUB_TOKEN`（它只对当前仓库有权限），只能配一个 PAT。
     那意味着把公开仓库的写权限以 secret 形式挂在组织仓库上 —— 组织成员的
@@ -12030,11 +12038,10 @@ git add -A && git commit -m "发布 v1.0.1：Maven 构件" && git push
 
 ## 文档站的日常改动
 
-**改文档不需要发版。** 推到 `main` 后 `docs.yml` 会校验翻译结构与死链，
-但**不会发布** —— 站点更新要走上面那节的手动步骤。
+**改文档不需要发版**，但也**不会自动上线** —— 站点更新要走上面那节的手动步骤。
 
-好在文档改动可以**积攒着一次性发**：CI 已经保证了「能构建、没死链、译本结构没坏」，
-攒几次再搬不会积累风险。
+文档改动可以积攒着一次性发。前提是每次提交前本地跑过 `bun run check`：
+它保证「能构建、没死链、译本结构没坏」，攒几次再搬才不会积累风险。
 
 本地预览：
 
@@ -12104,7 +12111,7 @@ api 模块动了签名时，记得同步改 `RigidPhysicsApiImpl.API_VERSION`
 
 ## CI 为什么要「剥离本机专属构建配置」
 
-凡是要跑 Gradle 的 workflow（`build.yml`、`javadoc.yml`、`release.yml`）里都有这一步：
+两个要跑 Gradle 的 workflow（`build.yml`、`release.yml`）里都有这一步：
 
 ```bash
 sed -i '/^org\.gradle\.java\.home=/d' gradle.properties
@@ -12122,7 +12129,7 @@ wrapper 的 `distributionUrl` 指向阿里云镜像（开发机直连 gradle.org
 而 runner 在境外从阿里云拉发行包又慢又不稳。两边各用各的源。
 
 > ⚠ 升级 Gradle 时要**同时**改 `gradle-wrapper.properties` 的 `distributionUrl`
-> 和三个 workflow 里的 `gradle-version`。只改一处不会报错，只会让 CI 与本地跑在
+> 和两个 workflow 里的 `gradle-version`。只改一处不会报错，只会让 CI 与本地跑在
 > 不同版本上 —— 而这类不一致往往要到某个版本行为差异暴露时才被发现。
 
 ---
@@ -12139,8 +12146,8 @@ wrapper 的 `distributionUrl` 指向阿里云镜像（开发机直连 gradle.org
 | Javadoc 任务报 `Input length = 1` | 用的是 Gradle 内置 `javadoc` 任务，应走 `javadocUtf8` / `aggregateJavadoc` |
 | `:api:javadocUtf8` 失败 | api 模块用 `-Xdoclint:all`，缺 `@param` 或坏 `{@link}` 都会红 —— 这是设计如此 |
 | 文档站构建报 link not found | `--strict` 拦下了死链。相对链接不能跑出 `docs/` 目录；指向构建期产物（zip、llms.txt）要用绝对 URL |
-| 文档站搜中文搜不到 | CI 的 `pip install` 里漏了 `jieba` |
-| 改完文档推上去了，线上却没变 | **正常** —— CI 只校验不发布，站点更新要走[手动发布](#manual-publish) |
+| 文档站搜中文搜不到 | 装文档依赖时漏了 `jieba` —— 它在 `requirements-docs.txt` 里，别单独 pip install |
+| 改完文档推上去了，线上却没变 | **正常** —— 站点更新要走[手动发布](#manual-publish)，没有任何自动化 |
 | 发布后文档站没了但 Maven 还在 | 手动发布时 `find` 的 `! -name` 排除项抄漏了 |
 
 ---

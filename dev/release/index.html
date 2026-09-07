@@ -3511,25 +3511,21 @@
 <td>编译、跑测试、校验 API 文档、验证发布产物可生成</td>
 </tr>
 <tr>
-<td><code>docs.yml</code></td>
-<td>改了 <code>docs/**</code> 等</td>
-<td>翻译结构校验 + 严格模式构建（死链会红）</td>
-</tr>
-<tr>
-<td><code>javadoc.yml</code></td>
-<td>改了 <code>*/src/main/java/**</code> 或译文覆盖层</td>
-<td>译文覆盖层校验 + doclint + 生成聚合文档</td>
-</tr>
-<tr>
 <td><code>release.yml</code></td>
 <td>打了 <code>v*</code> tag</td>
 <td>建 GitHub Release</td>
 </tr>
 </tbody>
 </table>
-<p>四条都把产物上传成 artifact，但<strong>没有一条会往公开仓库推</strong>。</p>
+<p>两条都把产物上传成 artifact，但<strong>没有一条会往公开仓库推</strong>。</p>
+<p>曾经还有 <code>docs.yml</code>（文档站校验）与 <code>javadoc.yml</code>（Javadoc 校验）两条，
+2026-09 移除 —— 它们在这个组织仓库上持续失败并发通知，而排查要看
+Actions 日志。<strong>文档相关的校验现在只在本地跑</strong>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bun<span class="w"> </span>run<span class="w"> </span>check<span class="w">     </span><span class="c1"># 翻译结构 + Javadoc 覆盖层 + 严格模式构建，一把梭</span>
+</code></pre></div>
+<p>提交文档改动前跑它。少了 CI 兜底，这条命令就是唯一的门禁。</p>
 <div class="admonition note">
-<p class="admonition-title">为什么不做成自动的</p>
+<p class="admonition-title">为什么发布也不做成自动的</p>
 <p>跨仓库推送用不了 <code>GITHUB_TOKEN</code>（它只对当前仓库有权限），只能配一个 PAT。
 那意味着把公开仓库的写权限以 secret 形式挂在组织仓库上 —— 组织成员的
 Actions 权限边界比个人仓库复杂得多，为省几次手动操作不值得。</p>
@@ -3540,9 +3536,9 @@ Actions 权限边界比个人仓库复杂得多，为省几次手动操作不值
 <h2 id="_4">一次性准备<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
 <p>以下几步只在<strong>第一次发布前</strong>做一次。</p>
 <h3 id="1">1. 建两个仓库并推代码<a class="headerlink" href="#1" title="Permanent link">🔗</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 私有仓库：源码</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>https://github.com/HappyWithMin/GTRigidPhysics.git
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>main
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 私有仓库：源码</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>https://github.com/HappyWithMin/GTRigidPhysics.git
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>main
 </code></pre></div>
 <p>公开仓库的 <code>main</code>（文档源码）与 <code>gh-pages</code>（构建产物）手动推一份上去，
 之后按<a href="#manual-publish">手动发布</a>那一节更新。</p>
@@ -3587,21 +3583,21 @@ Actions 权限边界比个人仓库复杂得多，为省几次手动操作不值
 </blockquote>
 <hr />
 <h2 id="_5">日常发布<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 1. 改版本号</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">#    gradle.properties 里的 version 只是本地默认值，</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">#    CI 用的是 tag，两者保持一致以免混淆</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>vim<span class="w"> </span>gradle.properties
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># 2. 本地过一遍</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>./gradlew<span class="w"> </span>build<span class="w"> </span>-PrunTests
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>bun<span class="w"> </span>run<span class="w"> </span>javadoc:check<span class="w">             </span><span class="c1"># 译文覆盖层是否还与原文代码一致</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>./gradlew<span class="w"> </span>aggregateJavadoc<span class="w">        </span><span class="c1"># 产出 build/docs/javadoc/{index.html,zh,en}</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>./gradlew<span class="w"> </span>publishAllToStaging<span class="w">     </span><span class="c1"># 产物在 build/maven-repo/</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># 3. 提交并打 tag</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>git<span class="w"> </span>commit<span class="w"> </span>-am<span class="w"> </span><span class="s2">"chore: 发布 1.0.1"</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>git<span class="w"> </span>tag<span class="w"> </span>v1.0.1
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main<span class="w"> </span>--tags
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># 1. 改版本号</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1">#    gradle.properties 里的 version 只是本地默认值，</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1">#    CI 用的是 tag，两者保持一致以免混淆</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>vim<span class="w"> </span>gradle.properties
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># 2. 本地过一遍</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>./gradlew<span class="w"> </span>build<span class="w"> </span>-PrunTests
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>bun<span class="w"> </span>run<span class="w"> </span>javadoc:check<span class="w">             </span><span class="c1"># 译文覆盖层是否还与原文代码一致</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>./gradlew<span class="w"> </span>aggregateJavadoc<span class="w">        </span><span class="c1"># 产出 build/docs/javadoc/{index.html,zh,en}</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>./gradlew<span class="w"> </span>publishAllToStaging<span class="w">     </span><span class="c1"># 产物在 build/maven-repo/</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1"># 3. 提交并打 tag</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>git<span class="w"> </span>commit<span class="w"> </span>-am<span class="w"> </span><span class="s2">"chore: 发布 1.0.1"</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>git<span class="w"> </span>tag<span class="w"> </span>v1.0.1
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main<span class="w"> </span>--tags
 </code></pre></div>
 <p>推 tag 之后 <code>release.yml</code> 会自动：</p>
 <ol>
@@ -3616,30 +3612,30 @@ notice 提醒，别漏掉：GitHub Release 建好了不等于文档站更新了�
 <h2 id="manual-publish">手动发布文档站与 Javadoc<a class="headerlink" href="#manual-publish" title="Permanent link">🔗</a></h2>
 <p>私有仓库的 CI 只校验、不推送，所以线上那份要自己搬。一次性 clone 好公开仓库，
 之后每次重复第 3 步起即可。</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># 1. 本地生成产物</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>bun<span class="w"> </span>run<span class="w"> </span>docs:build<span class="w">            </span><span class="c1"># → site/          （严格模式，死链会失败）</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>./gradlew<span class="w"> </span>aggregateJavadoc<span class="w">    </span><span class="c1"># → build/docs/javadoc/{index.html,zh,en}</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># 2. clone 公开仓库（只需一次）</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/GTedd/GTRigidPhysics.git<span class="w"> </span>/tmp/pub
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># 3. 更新 gh-pages</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="nb">cd</span><span class="w"> </span>/tmp/pub<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>gh-pages
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1">#    清旧站点，但守住 cn/（Maven 构件）—— 见下面的警告</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>find<span class="w"> </span>.<span class="w"> </span>-mindepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>-maxdepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>!<span class="w"> </span>-name<span class="w"> </span><span class="s1">'.git'</span><span class="w"> </span>!<span class="w"> </span>-name<span class="w"> </span><span class="s1">'cn'</span><span class="w"> </span>!<span class="w"> </span>-name<span class="w"> </span><span class="s1">'javadoc'</span><span class="w"> </span>-exec<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="o">{}</span><span class="w"> </span>+
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>cp<span class="w"> </span>-r<span class="w"> </span>&lt;项目路径&gt;/site/.<span class="w"> </span>.
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>rm<span class="w"> </span>-rf<span class="w"> </span>javadoc<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mkdir<span class="w"> </span>javadoc<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span>&lt;项目路径&gt;/build/docs/javadoc/.<span class="w"> </span>javadoc/
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>touch<span class="w"> </span>.nojekyll<span class="w">               </span><span class="c1"># 不加这个 Jekyll 会吞掉下划线开头的目录</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"docs: 更新文档站与 Javadoc"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>push
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="c1"># 4. 同步文档源码到 main，让站上每页的「编辑本页」铅笔有地方可去</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="nb">cd</span><span class="w"> </span>/tmp/pub<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>main
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>rm<span class="w"> </span>-rf<span class="w"> </span>docs<span class="w"> </span>hooks<span class="w"> </span>overrides<span class="w"> </span>tools<span class="w"> </span>mkdocs.yml<span class="w"> </span>requirements-docs.txt<span class="w"> </span>package.json
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>cp<span class="w"> </span>-r<span class="w"> </span>&lt;项目路径&gt;/<span class="o">{</span>docs,hooks,overrides<span class="o">}</span><span class="w"> </span>.
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>tools<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span>&lt;项目路径&gt;/tools/i18n<span class="w"> </span>tools/
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>cp<span class="w"> </span>&lt;项目路径&gt;/<span class="o">{</span>mkdocs.yml,requirements-docs.txt,package.json<span class="o">}</span><span class="w"> </span>.
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>rm<span class="w"> </span>-rf<span class="w"> </span>docs/internal<span class="w"> </span>hooks/__pycache__<span class="w">      </span><span class="c1"># 内部材料与字节码缓存不外发</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"docs: 同步文档源码"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># 1. 本地生成产物</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bun<span class="w"> </span>run<span class="w"> </span>docs:build<span class="w">            </span><span class="c1"># → site/          （严格模式，死链会失败）</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>./gradlew<span class="w"> </span>aggregateJavadoc<span class="w">    </span><span class="c1"># → build/docs/javadoc/{index.html,zh,en}</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># 2. clone 公开仓库（只需一次）</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/GTedd/GTRigidPhysics.git<span class="w"> </span>/tmp/pub
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># 3. 更新 gh-pages</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="nb">cd</span><span class="w"> </span>/tmp/pub<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>gh-pages
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">#    清旧站点，但守住 cn/（Maven 构件）—— 见下面的警告</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>find<span class="w"> </span>.<span class="w"> </span>-mindepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>-maxdepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>!<span class="w"> </span>-name<span class="w"> </span><span class="s1">'.git'</span><span class="w"> </span>!<span class="w"> </span>-name<span class="w"> </span><span class="s1">'cn'</span><span class="w"> </span>!<span class="w"> </span>-name<span class="w"> </span><span class="s1">'javadoc'</span><span class="w"> </span>-exec<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="o">{}</span><span class="w"> </span>+
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>cp<span class="w"> </span>-r<span class="w"> </span>&lt;项目路径&gt;/site/.<span class="w"> </span>.
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>rm<span class="w"> </span>-rf<span class="w"> </span>javadoc<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mkdir<span class="w"> </span>javadoc<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span>&lt;项目路径&gt;/build/docs/javadoc/.<span class="w"> </span>javadoc/
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>touch<span class="w"> </span>.nojekyll<span class="w">               </span><span class="c1"># 不加这个 Jekyll 会吞掉下划线开头的目录</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"docs: 更新文档站与 Javadoc"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>push
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="c1"># 4. 同步文档源码到 main，让站上每页的「编辑本页」铅笔有地方可去</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="nb">cd</span><span class="w"> </span>/tmp/pub<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>main
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>rm<span class="w"> </span>-rf<span class="w"> </span>docs<span class="w"> </span>hooks<span class="w"> </span>overrides<span class="w"> </span>tools<span class="w"> </span>mkdocs.yml<span class="w"> </span>requirements-docs.txt<span class="w"> </span>package.json
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>cp<span class="w"> </span>-r<span class="w"> </span>&lt;项目路径&gt;/<span class="o">{</span>docs,hooks,overrides<span class="o">}</span><span class="w"> </span>.
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>tools<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span>&lt;项目路径&gt;/tools/i18n<span class="w"> </span>tools/
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>cp<span class="w"> </span>&lt;项目路径&gt;/<span class="o">{</span>mkdocs.yml,requirements-docs.txt,package.json<span class="o">}</span><span class="w"> </span>.
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>rm<span class="w"> </span>-rf<span class="w"> </span>docs/internal<span class="w"> </span>hooks/__pycache__<span class="w">      </span><span class="c1"># 内部材料与字节码缓存不外发</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"docs: 同步文档源码"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>push
 </code></pre></div>
 <div class="admonition danger">
 <p class="admonition-title">两个地方错了就会造成实际损害</p>
@@ -3650,19 +3646,18 @@ notice 提醒，别漏掉：GitHub Release 建好了不等于文档站更新了�
 否则这一步会把它抹掉。合了就立刻带回来，别攒着。</p>
 </div>
 <p>发版时的 Maven 构件多一步：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">cd</span><span class="w"> </span>/tmp/pub<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>gh-pages
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>cp<span class="w"> </span>-r<span class="w"> </span>&lt;项目路径&gt;/build/maven-repo/.<span class="w"> </span>.<span class="w">       </span><span class="c1"># 叠加，不清空</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"发布 v1.0.1：Maven 构件"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>push
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>/tmp/pub<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>gh-pages
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>cp<span class="w"> </span>-r<span class="w"> </span>&lt;项目路径&gt;/build/maven-repo/.<span class="w"> </span>.<span class="w">       </span><span class="c1"># 叠加，不清空</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"发布 v1.0.1：Maven 构件"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>push
 </code></pre></div>
 <hr />
 <h2 id="_6">文档站的日常改动<a class="headerlink" href="#_6" title="Permanent link">🔗</a></h2>
-<p><strong>改文档不需要发版。</strong> 推到 <code>main</code> 后 <code>docs.yml</code> 会校验翻译结构与死链，
-但<strong>不会发布</strong> —— 站点更新要走上面那节的手动步骤。</p>
-<p>好在文档改动可以<strong>积攒着一次性发</strong>：CI 已经保证了「能构建、没死链、译本结构没坏」，
-攒几次再搬不会积累风险。</p>
+<p><strong>改文档不需要发版</strong>，但也<strong>不会自动上线</strong> —— 站点更新要走上面那节的手动步骤。</p>
+<p>文档改动可以积攒着一次性发。前提是每次提交前本地跑过 <code>bun run check</code>：
+它保证「能构建、没死链、译本结构没坏」，攒几次再搬才不会积累风险。</p>
 <p>本地预览：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bun<span class="w"> </span>run<span class="w"> </span>docs<span class="w">           </span><span class="c1"># → http://127.0.0.1:8000，改 md 自动热重载</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>bun<span class="w"> </span>run<span class="w"> </span>docs:build<span class="w">     </span><span class="c1"># 严格模式，死链会让构建失败</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bun<span class="w"> </span>run<span class="w"> </span>docs<span class="w">           </span><span class="c1"># → http://127.0.0.1:8000，改 md 自动热重载</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>bun<span class="w"> </span>run<span class="w"> </span>docs:build<span class="w">     </span><span class="c1"># 严格模式，死链会让构建失败</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">jieba 不是可选依赖</p>
@@ -3795,9 +3790,9 @@ notice 提醒，别漏掉：GitHub Release 建好了不等于文档站更新了�
 详见源码仓库根目录的 <code>THIRD_PARTY_NOTICES.md</code>。</p>
 <hr />
 <h2 id="ci">CI 为什么要「剥离本机专属构建配置」<a class="headerlink" href="#ci" title="Permanent link">🔗</a></h2>
-<p>凡是要跑 Gradle 的 workflow（<code>build.yml</code>、<code>javadoc.yml</code>、<code>release.yml</code>）里都有这一步：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'/^org\.gradle\.java\.home=/d'</span><span class="w"> </span>gradle.properties
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'/^javaHome=/d'</span><span class="w"> </span>gradle/wrapper/gradle-wrapper.properties
+<p>两个要跑 Gradle 的 workflow（<code>build.yml</code>、<code>release.yml</code>）里都有这一步：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'/^org\.gradle\.java\.home=/d'</span><span class="w"> </span>gradle.properties
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'/^javaHome=/d'</span><span class="w"> </span>gradle/wrapper/gradle-wrapper.properties
 </code></pre></div>
 <p>这两处都写死了 <code>D:\zulu25</code>，runner 上不存在，不删就是构建第一步直接挂。</p>
 <p>它们留在仓库里是刻意的：开发机路径含中文，那套配置有实测依据
@@ -3808,7 +3803,7 @@ wrapper 的 <code>distributionUrl</code> 指向阿里云镜像（开发机直连
 而 runner 在境外从阿里云拉发行包又慢又不稳。两边各用各的源。</p>
 <blockquote>
 <p>⚠ 升级 Gradle 时要<strong>同时</strong>改 <code>gradle-wrapper.properties</code> 的 <code>distributionUrl</code>
-和三个 workflow 里的 <code>gradle-version</code>。只改一处不会报错，只会让 CI 与本地跑在
+和两个 workflow 里的 <code>gradle-version</code>。只改一处不会报错，只会让 CI 与本地跑在
 不同版本上 —— 而这类不一致往往要到某个版本行为差异暴露时才被发现。</p>
 </blockquote>
 <hr />
@@ -3855,11 +3850,11 @@ wrapper 的 <code>distributionUrl</code> 指向阿里云镜像（开发机直连
 </tr>
 <tr>
 <td>文档站搜中文搜不到</td>
-<td>CI 的 <code>pip install</code> 里漏了 <code>jieba</code></td>
+<td>装文档依赖时漏了 <code>jieba</code> —— 它在 <code>requirements-docs.txt</code> 里，别单独 pip install</td>
 </tr>
 <tr>
 <td>改完文档推上去了，线上却没变</td>
-<td><strong>正常</strong> —— CI 只校验不发布，站点更新要走<a href="#manual-publish">手动发布</a></td>
+<td><strong>正常</strong> —— 站点更新要走<a href="#manual-publish">手动发布</a>，没有任何自动化</td>
 </tr>
 <tr>
 <td>发布后文档站没了但 Maven 还在</td>
