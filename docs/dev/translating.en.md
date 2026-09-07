@@ -1,5 +1,5 @@
 ---
-i18n_source_sha: 4b51c27e6860
+i18n_source_sha: a417db0dd348
 ---
 
 # Translating the Docs
@@ -182,7 +182,8 @@ bun run javadoc:check
 
 It strips every comment from both files and compares what is left, byte for byte. Any
 difference fails, which catches both "the translator edited code" and "the original
-changed and this translation is stale". CI runs it on every PR.
+changed and this translation is stale". **Run it yourself before submitting** — this
+repository has no CI to catch it for you.
 
 When it fails it prints the context around the first difference. What to do depends on
 which case it is:
@@ -306,5 +307,6 @@ docs(i18n/en): sync configuration with the latest original
 ```
 
 In the PR, say **which pages** you translated and whether they are **new or a sync**.
-Translations don't need the plugin test suite; CI checks the docs site builds and that the
-Javadoc overlay hasn't drifted.
+Translations don't need the plugin test suite, but **do run** `bun run check` before
+submitting (translation structure + Javadoc overlay + strict build) — there is no CI
+backing up this path.
