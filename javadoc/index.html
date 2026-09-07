@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--
+  /javadoc/ 的语言选择落地页。
+
+  为什么需要它：文档站导航里那条「API 文档 (Javadoc)」只能是一个固定 URL ——
+  mkdocs-static-i18n 的 nav_translations 只翻标题、翻不了链接，而为了一条链接
+  把整棵 nav 复制一份不划算。于是让这一页按浏览器语言分流。
+
+  新增语言时在下面的 LANGS 里加一项，并保证 build.gradle.kts 的 javadocLocales
+  里有同名的 dir —— 两处的语言代码必须一致，否则这里会跳到一个 404。
+
+  由 aggregateJavadoc（Sync 任务）原样拷到 build/docs/javadoc/index.html。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTRigidPhysics API — 选择语言 / Choose a language</title>
+<!-- 这一页只是个路牌，不该被搜索引擎当成内容页收录 -->
+<meta name="robots" content="noindex, follow">
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans CJK SC",
+                 "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 34rem; margin: 18vh auto 0; padding: 0 1.5rem; line-height: 1.7;
+  }
+  h1 { font-size: 1.35rem; margin: 0 0 .25rem; }
+  p.sub { margin: 0 0 2rem; opacity: .7; font-size: .95rem; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { margin: 0 0 .75rem; }
+  a.lang {
+    display: block; padding: .85rem 1.1rem; border: 1px solid currentColor;
+    border-radius: .5rem; text-decoration: none; color: inherit; opacity: .85;
+  }
+  a.lang:hover, a.lang:focus { opacity: 1; }
+  a.lang b { display: block; font-size: 1.05rem; }
+  a.lang span { opacity: .65; font-size: .9rem; }
+  footer { margin-top: 2.5rem; font-size: .85rem; opacity: .6; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+
+<h1>GTRigidPhysics API</h1>
+<p class="sub">选择语言 · Choose a language</p>
+
+<ul id="langs">
+  <li>
+    <a class="lang" href="zh/" hreflang="zh-CN">
+      <b>简体中文</b>
+      <span>API 参考（源语言，内容最完整）</span>
+    </a>
+  </li>
+  <li>
+    <a class="lang" href="en/" hreflang="en">
+      <b>English</b>
+      <span>API reference — partially translated, falls back to Chinese</span>
+    </a>
+  </li>
+</ul>
+
+<footer>
+  <a href="../">← 文档站 / Documentation site</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/GTedd/GTRigidPhysics">GitHub</a>
+</footer>
+
+<script>
+  // 按浏览器语言自动分流。用 replace 而不是 assign：
+  // 否则从 /javadoc/zh/ 点浏览器后退会弹回这里再被立刻踢走，形成后退死循环。
+  //
+  // 只在「直接进来」时跳转：带 ?pick 的 URL 表示用户是特意来选语言的，别抢方向盘。
+  (function () {
+    if (location.search.indexOf('pick') !== -1) return;
+
+    var LANGS = ['zh', 'en'];      // 与 build.gradle.kts 的 javadocLocales 保持一致
+    var FALLBACK = 'en';
+
+    var prefs = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < prefs.length; i++) {
+      var tag = String(prefs[i]).toLowerCase();
+      for (var j = 0; j < LANGS.length; j++) {
+        // 前缀匹配：zh-CN / zh-Hans-CN / zh 都算 zh
+        if (tag === LANGS[j] || tag.indexOf(LANGS[j] + '-') === 0) {
+          location.replace(LANGS[j] + '/');
+          return;
+        }
+      }
+    }
+    location.replace(FALLBACK + '/');
+  })();
+</script>
+
+</body>
+</html>

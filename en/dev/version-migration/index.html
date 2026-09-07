@@ -1,0 +1,4303 @@
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A vanilla-compatible rigid body physics engine for Minecraft Paper 26.2 — structural collapse, vehicles, dice and props. Server-side only, no client mod.">
+      
+      
+        <meta name="author" content="GTedd">
+      
+      
+        <link rel="canonical" href="https://gtedd.github.io/GTRigidPhysics/en/dev/version-migration/">
+      
+      
+        <link rel="prev" href="../export/">
+      
+      
+        <link rel="next" href="../release/">
+      
+      
+        
+          <link rel="alternate" href="../../../dev/version-migration/" hreflang="zh">
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Version Migration - GTRigidPhysics</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/md-export.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../" title="GTRigidPhysics" class="md-header__button md-logo" aria-label="GTRigidPhysics" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GTRigidPhysics
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Version Migration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="deep-orange"  aria-label="切换到深色模式 / Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式 / Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="deep-orange"  aria-label="切换到浅色模式 / Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式 / Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../dev/version-migration/" hreflang="zh" class="md-select__link">
+              简体中文
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/GTedd/GTRigidPhysics" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GTedd/GTRigidPhysics
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../guide/quick-start/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../features/collapse/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../addons/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Add-ons
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Using the API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../engine/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Engine Internals
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../build/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="GTRigidPhysics" class="md-nav__button md-logo" aria-label="GTRigidPhysics" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GTRigidPhysics
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/GTedd/GTRigidPhysics" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GTedd/GTRigidPhysics
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Command Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../guide/config/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    config.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    analysis.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    structure.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/view/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    view.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/collision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    collision.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/physics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    physics.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/budget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    budget.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/materials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    materials.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/settle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    settle.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/impact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    impact.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/tnt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    tnt.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/systems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    systems.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/camera-roll/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    camera-roll.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/resource-pack/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    resource-pack.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance & Budget
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/collapse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structural Collapse
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/explosion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Explosion Scatter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/settle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Settle Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/impact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Impact Consequences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/tnt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Physics TNT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/materials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Physics Materials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/block-collision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Real Hitboxes & Interaction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/camera-roll/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Camera Roll
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/craftengine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CraftEngine Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../features/objects/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Object Templates
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_10" id="__nav_3_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Object Templates
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/objects/dice/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dice
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/objects/vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vehicle Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/objects/domino-and-plank/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dominoes & Planks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/objects/fun-objects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fun Objects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../addons/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Add-ons
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Add-ons
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/panel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Panel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/toolbelt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Toolbelt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vehicle Add-on
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/writing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing an Add-on
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using the API
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Using the API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bodies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rigid Bodies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/collapse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Collapse & Debris
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/materials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Materials, Effects & Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fields/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Force Fields
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/vehicles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vehicles, Mechanisms & Characters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Complete Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://gtedd.github.io/GTRigidPhysics/javadoc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference (Javadoc)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../engine/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Internals
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Engine Internals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/module-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/xpbd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XPBD Solver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/shape/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shapes & Box Merging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact Generation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/constraints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Constraints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/mass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mass & Inertia Tensor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/forces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Force System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/force-ledger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Force Ledger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/terrain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Terrain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/threading/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Threading & Data Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/view-packets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    View Packets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vehicle Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/character/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Virtual Characters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/ragdoll/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ragdolls
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/limits/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance & Limits
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribution Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../translating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translating the Docs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exporting Markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Version Migration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Version Migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 先看清楚我们站在什么上面
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 耦合面分层
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-l4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 渲染管线（L4）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 渲染管线（L4）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 变更史：每个版本都在改
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 本项目的暴露面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 隔离已经生效 —— 有实证
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 官方更新带来的机会（这才是重点）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 渲染管线升级手册
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-apil2-l3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 服务端 API（L2 / L3）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 服务端 API（L2 / L3）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-paper-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Paper API 与弃用政策
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 实体 metadata 索引 —— 最危险的一处
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-packetevents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 packetevents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-mojang" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Mojang 官方服务端方向
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-l1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 物理引擎（原 L1）：这一层已经不存在了
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 版本支持矩阵与分支模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 版本支持矩阵与分支模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-mc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 只支持一个 MC 版本
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 分支模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 一个版本组合就是一个「已验收的四元组」
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 升级操作总表
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 升级操作总表">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        准备
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#l4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        渲染管线（L4）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apil2-l3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        服务端 API（L2 / L3）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nativel1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        native（L1）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        验收
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 一句话总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 先看清楚我们站在什么上面
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 耦合面分层
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-l4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 渲染管线（L4）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 渲染管线（L4）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 变更史：每个版本都在改
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 本项目的暴露面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 隔离已经生效 —— 有实证
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 官方更新带来的机会（这才是重点）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 渲染管线升级手册
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-apil2-l3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 服务端 API（L2 / L3）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 服务端 API（L2 / L3）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-paper-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Paper API 与弃用政策
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 实体 metadata 索引 —— 最危险的一处
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-packetevents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 packetevents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-mojang" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Mojang 官方服务端方向
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-l1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 物理引擎（原 L1）：这一层已经不存在了
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 版本支持矩阵与分支模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 版本支持矩阵与分支模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-mc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 只支持一个 MC 版本
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 分支模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 一个版本组合就是一个「已验收的四元组」
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 升级操作总表
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 升级操作总表">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        准备
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#l4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        渲染管线（L4）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apil2-l3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        服务端 API（L2 / L3）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nativel1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        native（L1）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        验收
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 一句话总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+  
+
+
+  
+  
+
+  <div class="gtrp-md-export" title="Markdown sources, for translators and AI agents">
+    <a href="../version-migration.md" download>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.56 18H3.44C2.65 18 2 17.37 2 16.59V7.41C2 6.63 2.65 6 3.44 6h17.12c.79 0 1.44.63 1.44 1.41v9.18c0 .78-.65 1.41-1.44 1.41M3.44 6.94c-.26 0-.48.21-.48.47v9.19c0 .25.22.46.48.46h17.12c.26 0 .48-.21.48-.46V7.41c0-.26-.22-.47-.48-.47zm1.45 8.25V8.81h1.92l1.92 2.35 1.92-2.35h1.93v6.38h-1.93v-3.66l-1.92 2.35-1.92-2.35v3.66zm12.01 0-2.9-3.1h1.94V8.81h1.92v3.28h1.93z"/></svg>Download this page as Markdown
+    </a>
+    <a href="../../../export/gtrigidphysics-docs-en.zip" download>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 18H4V8h16m0-2h-8l-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2m-6 3h2v4h3l-4 4-4-4h3Z"/></svg>Export all pages (.zip)
+    </a>
+  </div>
+
+
+  
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+
+    
+    <div class="admonition warning">
+      <p class="admonition-title">This page has not been translated yet</p>
+      <p>You are reading the Simplified Chinese original. Translations are contributed by the community — this page is up for grabs.</p>
+      <p>
+        <a href="https://github.com/GTedd/GTRigidPhysics/new/main?filename=docs/dev/version-migration.en.md"
+           rel="nofollow noopener">Translate this page &rarr;</a>
+        &nbsp;·&nbsp;
+        <a href="../../../en/dev/translating/">How to translate</a>
+        &nbsp;·&nbsp;
+        <code>docs/dev/version-migration.en.md</code>
+      </p>
+    </div>
+
+  
+
+
+  
+                  
+
+
+  
+    <a href="https://github.com/GTedd/GTRigidPhysics/edit/main/docs/dev/version-migration.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="_1">版本适配手册<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
+<blockquote>
+<p>这份文档回答：<strong>Minecraft 又更新了，该做什么？</strong></p>
+<p>以及一个更重要的问题：<strong>怎么让官方的更新成为助力而不是负担。</strong></p>
+<p>数据截至 2026-08-06。MC 正式版 26.2（2026-06-16），快照 26.3-snapshot-7（每周一发）。</p>
+</blockquote>
+<hr />
+<h2 id="1">1. 先看清楚我们站在什么上面<a class="headerlink" href="#1" title="Permanent link">🔗</a></h2>
+<p>这个项目依赖的东西，没有一个是慢的。</p>
+<div class="admonition success">
+<p class="admonition-title">有一项已经从这张表上消失了</p>
+<p>物理引擎曾经是 <code>jolt-jni</code>（2026-04 → 2026-07 四个月发了 8 个版本，major 从 4 跳到 6）。
+2026-08-20 换成<strong>自研纯 Java 引擎</strong>之后，这一整层外部依赖没有了 ——
+连带消失的还有三平台 native 分发、<code>--enable-native-access</code>、以及 native 内存泄漏这一整类问题。</p>
+<p>这正是当初做那次整改的动机之一。</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>依赖</th>
+<th>实测节奏</th>
+<th>破坏性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Minecraft 渲染管线</strong></td>
+<td>每个版本都改，见 §3.1</td>
+<td>极高 —— 26.3 直接删掉了本项目在用的后处理效果</td>
+</tr>
+<tr>
+<td><strong><code>packetevents</code></strong></td>
+<td>约每月一个小版本</td>
+<td>中 —— 跟着 MC 协议走</td>
+</tr>
+<tr>
+<td><strong>Paper API</strong></td>
+<td>跟随 MC 版本</td>
+<td>低 —— 有明确的弃用政策，见 §4.1</td>
+</tr>
+<tr>
+<td><strong>资源包格式</strong></td>
+<td>26.2 是 <code>pack_format: 88</code>，26.3 是 <strong>95</strong></td>
+<td>高 —— 一个小版本跳了 7 个格式号</td>
+</tr>
+</tbody>
+</table>
+<p><strong>结论不是「要小心」，而是「必须假设它们每个季度都会变，并据此设计边界」。</strong></p>
+<p>好消息是：项目现有的架构在这件事上已经做对了大半。§3.3 有实证。</p>
+<hr />
+<h2 id="2">2. 耦合面分层<a class="headerlink" href="#2" title="Permanent link">🔗</a></h2>
+<p>把所有「会随外部更新而失效」的东西按<strong>变化概率</strong>分层。层级决定了它该被放在哪、
+以及升级时要花多少精力去查。</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>内容</th>
+<th>变化概率</th>
+<th>隔离手段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>L0 稳定</strong></td>
+<td>物理算法、结构分析、预算与 LOD 决策、材质模型</td>
+<td>几乎不变</td>
+<td>放 <code>common</code>，零外部依赖</td>
+</tr>
+<tr>
+<td>~~<strong>L1 库 API</strong>~~</td>
+<td>~~物理库的类与方法~~</td>
+<td>——</td>
+<td><strong>已消失</strong>：引擎自研，物理层不再有外部 API 面</td>
+</tr>
+<tr>
+<td><strong>L2 服务端 API</strong></td>
+<td>Bukkit / Paper 的类与方法</td>
+<td>每个 MC 版本</td>
+<td>放 <code>paper</code>，走 <code>api-version</code> 声明</td>
+</tr>
+<tr>
+<td><strong>L3 网络协议</strong></td>
+<td>实体 metadata 索引、包结构</td>
+<td>每个 MC 版本</td>
+<td>走 packetevents，索引集中成常量</td>
+</tr>
+<tr>
+<td><strong>L4 渲染管线</strong></td>
+<td>着色器、后处理效果、资源包格式</td>
+<td><strong>每个版本都改</strong></td>
+<td>全部关在 <code>ResourcePack/</code> 里</td>
+</tr>
+</tbody>
+</table>
+<p><strong>这张表就是模块划分的真正理由。</strong> <code>api</code> 不依赖 <code>physics</code>、<code>common</code> 零 Bukkit 零物理实现
+这些约束，表面上是洁癖，实际上是在给 L2~L4 的变动划定爆炸半径。</p>
+<p><strong>一个新功能该放哪，先问它属于哪一层。</strong> 如果一段逻辑同时碰了 L0 和 L4，
+那它一定写错了 —— 拆开。</p>
+<hr />
+<h2 id="3-l4">3. 渲染管线（L4）<a class="headerlink" href="#3-l4" title="Permanent link">🔗</a></h2>
+<h3 id="31">3.1 变更史：每个版本都在改<a class="headerlink" href="#31" title="Permanent link">🔗</a></h3>
+<p>下表全部来自 <a href="https://minecraft.wiki/w/Shader">Minecraft Wiki 的 Shader 页面</a>，
+按版本整理。<strong>注意没有一个版本是空的。</strong></p>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>破坏性变更</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1.21.9</strong> (25w31a)</td>
+<td>删除 <code>post/blit.vsh</code>、<code>post/blur.vsh</code>、<code>post/invert.vsh</code>、<code>post/sobel.vsh</code>、<code>post/screenquad.vsh</code>、<code>core/blit_screen.vsh</code>，合并为 <code>core/screenquad.vsh</code>；<strong>后处理顶点着色器不再收到 <code>Position</code> 属性</strong>，改用 <code>gl_VertexID</code> 自行计算；且只跑 3 个顶点而非整个 quad</td>
+</tr>
+<tr>
+<td><strong>1.21.9</strong> (25w37a)</td>
+<td><strong>游戏改为要求 OpenGL 3.3 Core Profile</strong>；全部着色器从 GLSL <code>150</code> 升到 <code>330</code></td>
+</tr>
+<tr>
+<td><strong>1.21.11</strong> (25w44a)</td>
+<td>新增 <code>core/block.vsh/fsh</code>，专门渲染「非区块网格的方块」——<strong>下落的沙子、活塞推动的方块</strong>；<code>core/terrain</code> 改为线性过滤；新增 <code>SpriteAnimationInfo</code> 与 <code>ChunkSection</code> uniform 块</td>
+</tr>
+<tr>
+<td><strong>26.1</strong> (snap1)</td>
+<td><code>core/lightmap.fsh</code> 基本重写；<code>LightmapInfo</code> uniform 块增删改名</td>
+</tr>
+<tr>
+<td><strong>26.1</strong> (snap6)</td>
+<td>删除 <code>rendertype_item_entity_translucent_cull</code>、<code>rendertype_entity_alpha</code>、<code>rendertype_entity_decal</code>，合并进 <code>core/entity</code>；物品改用新的 <code>core/item</code></td>
+</tr>
+<tr>
+<td><strong>26.1</strong> (snap10)</td>
+<td>删除 <code>include/smooth_lighting.glsl</code>，换成 <code>include/sample_lightmap.glsl</code>；<strong><code>core/particle.vsh</code> 等一批着色器改了 lightmap 采样方式</strong></td>
+</tr>
+<tr>
+<td><strong>26.1</strong> (pre1)</td>
+<td>删除 <code>core/rendertype_translucent_moving_block</code>，并入 <code>core/block</code></td>
+</tr>
+<tr>
+<td><strong>26.2</strong> (snap1)</td>
+<td><strong>改用反转深度缓冲</strong>（<code>post/transparency.fsh</code> 的深度逻辑随之反转）；text 系列着色器合并；<strong>新增 Vulkan 后端</strong>，Vulkan 下会对着色器做预处理（<code>gl_VertexID</code>→<code>gl_VertexIndex</code>、<code>gl_InstanceID</code>→<code>gl_InstanceIndex</code>）</td>
+</tr>
+<tr>
+<td><strong>26.3</strong> (snap2)</td>
+<td><strong>用 OIT（顺序无关透明）取代 Improved Transparency</strong>；<strong><code>transparency</code> 后处理效果与 <code>post/transparency.fsh</code> 被整个删除</strong>；<code>rendertype_clouds</code>→<code>clouds</code>、<code>rendertype_world_border</code>→<code>world_border</code> 等改名；<strong><code>#include</code> 指令语法变更</strong>；新增 8 个 OIT 相关 include 与一批 <code>OIT_*</code> 宏</td>
+</tr>
+<tr>
+<td><strong>26.3</strong> (snap3)</td>
+<td><strong>新增 <code>/posteffect</code> 命令</strong> —— 见 §3.4，这是机会</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32">3.2 本项目的暴露面<a class="headerlink" href="#32" title="Permanent link">🔗</a></h3>
+<p>只有四个文件/目录直接吃这条管线：</p>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>作用</th>
+<th>已知受影响版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ResourcePack/assets/minecraft/post_effect/transparency.json</code></td>
+<td>挂载滚转后处理</td>
+<td><strong>26.3 删除，必须换成 <code>end_of_frame.json</code></strong></td>
+</tr>
+<tr>
+<td><code>ResourcePack/assets/minecraft/shaders/core/particle.vsh</code> / <code>.fsh</code></td>
+<td>识别数据粒子并画到约定像素</td>
+<td>26.1 snap10 改了 lightmap 采样</td>
+</tr>
+<tr>
+<td><code>ResourcePack/assets/shader_selector/shaders/post/*.fsh</code></td>
+<td>解码角度、旋转画面</td>
+<td>1.21.9 的 <code>gl_VertexID</code> 变更、26.3 的 <code>#include</code> 语法</td>
+</tr>
+<tr>
+<td><code>ResourcePack/pack.mcmeta</code></td>
+<td>格式号声明</td>
+<td>每个版本（26.2 = 88，26.3 = 95）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33">3.3 隔离已经生效 —— 有实证<a class="headerlink" href="#33" title="Permanent link">🔗</a></h3>
+<p><code>feature/camera-roll-26.3</code> 分支做的是「适配 26.3 全新 OIT 管线」这件事，
+按说是伤筋动骨。实际改动统计：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>16 个文件改动，341 行新增，435 行删除
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>其中 Java 源文件：0 个
+</code></pre></div>
+<p>具体分布：</p>
+<ul>
+<li><code>ResourcePack/</code> 下 11 个文件（删掉 308 行的 <code>transparency.json</code>，新增 179 行的 <code>end_of_frame.json</code>，
+  改写粒子着色器与全部 post 着色器）</li>
+<li><code>paper/src/main/resources/camera-roll.yml</code> 1 个配置文件</li>
+<li><code>docs/</code> 3 篇文档</li>
+</ul>
+<p><strong>一次渲染管线级别的重写，没有碰到任何一行 Java 代码。</strong></p>
+<p>原因在 <code>ShaderRollProtocol</code>（<code>common</code> 模块）：它定义的是<strong>线路协议</strong>
+——「把角度压进一颗粒子的 ARGB 四字节，A=251 与 R=254 双字节校验，
+G 是操作码，B 是 8 位角度值」。这个协议与 GLSL 怎么写、
+后处理效果叫什么名字、深度缓冲是不是反的，全都无关。</p>
+<blockquote>
+<p><strong>这条边界要守住。</strong> 任何时候只要有人想在 Java 侧写「如果是 26.3 就……」，
+就说明边界正在被侵蚀 —— 正确的做法是把差异吸收进资源包。</p>
+</blockquote>
+<h3 id="34">3.4 官方更新带来的机会（这才是重点）<a class="headerlink" href="#34" title="Permanent link">🔗</a></h3>
+<p>前面都在讲怎么不被打死。但 26.x 这一轮管线重写里，<strong>有三件事是净利好</strong>，
+应当主动去吃：</p>
+<h4 id="1-posteffect-263-snap3">① <code>/posteffect</code> 命令（26.3 snap3）—— 最重要的一件<a class="headerlink" href="#1-posteffect-263-snap3" title="Permanent link">🔗</a></h4>
+<p>官方新增了 <code>posteffect add|remove|clear|list &lt;players&gt; &lt;posteffect&gt;</code>，
+<strong>服务端可以逐玩家增删后处理效果</strong>，且效果本身可以是资源包里自定义的
+（<code>assets/&lt;namespace&gt;/post_effect/</code>）。官方原话：</p>
+<blockquote>
+<p>Post effects themselves were already part of the resource pack format,
+but only a few hardcoded ones were available to use.</p>
+</blockquote>
+<p>这直接命中本项目最脏的一处设计。现状是：滚转效果<strong>只能常驻</strong>，
+靠劫持 <code>transparency</code>（一个本来另有用途的效果）挂上去，
+所有装了资源包的玩家全程都在跑这段后处理。</p>
+<p>有了 <code>/posteffect</code> 之后：</p>
+<ul>
+<li>效果可以<strong>按需挂载</strong>：只有真正在经历爆炸/坍塌的玩家才挂上，其余人零开销</li>
+<li>不必再劫持任何原版效果，用自己命名空间下的效果，<strong>从此不受原版增删效果的影响</strong></li>
+<li>玩家关掉时可以 <code>clear</code>，而不是靠发一个「角度归零」的粒子</li>
+</ul>
+<p><strong>但注意它的边界</strong>：官方明确说「post effects 存在于客户端资源包里，
+服务端无法知道某个效果是否真的生效」。而且这个命令只能开关效果，
+<strong>不能传参数</strong> —— 「转多少度」这个数值仍然只能走现有的粒子数据通道。
+所以 <code>ShaderRollProtocol</code> 不会被淘汰，被淘汰的是「劫持 <code>transparency</code>」这个挂载方式。</p>
+<blockquote>
+<p><strong>行动项</strong>：26.3 正式版发布后，把 <code>end_of_frame.json</code> 改为自有命名空间下的效果，
+挂载改走 <code>/posteffect</code>，并保留资源包常驻方式作为回退（服主可能停在旧版本）。</p>
+</blockquote>
+<h4 id="2-oit263-snap2">② OIT（26.3 snap2）<a class="headerlink" href="#2-oit263-snap2" title="Permanent link">🔗</a></h4>
+<p>新的顺序无关透明算法「预期能显著改善半透明物体的表现」。
+本项目大量使用 <code>BlockDisplay</code> 渲染碎块，其中玻璃、冰、树叶等半透明方块
+在旧的排序透明下常有穿插错误。<strong>这是白拿的观感提升，不需要改代码</strong>，
+但值得在 26.3 适配后做一次视觉验收（见仓库内的 <code>docs/internal/acceptance-checklist.md</code>）。</p>
+<h4 id="3-vulkan-262-snap1-coreblock-12111">③ Vulkan 后端（26.2 snap1）与 <code>core/block</code> 着色器（1.21.11）<a class="headerlink" href="#3-vulkan-262-snap1-coreblock-12111" title="Permanent link">🔗</a></h4>
+<ul>
+<li><strong>Vulkan</strong> 给客户端 FPS 留出了新的上限空间。本项目的瓶颈是带宽而非客户端渲染
+  （<code>DESIGN.md</code> §2），但「display entity 的客户端 FPS 上限」一直是个未实测的风险项
+  （§9 风险表），Vulkan 普及后这个风险会自然缓解。<strong>要做的事：重测那条基准。</strong></li>
+<li><strong><code>core/block</code></strong> 是官方专门为「下落的沙子、活塞推动的方块」新建的着色器。
+  这类物体与本项目的碎块在渲染语义上高度接近，
+  未来若官方继续扩展这条路径，可能出现比 <code>BlockDisplay</code> 更合适的载体。<strong>保持关注。</strong></li>
+</ul>
+<h4 id="4-gl_vertexid-vulkan">④ 一条要警惕的：<code>gl_VertexID</code> 与 Vulkan 预处理<a class="headerlink" href="#4-gl_vertexid-vulkan" title="Permanent link">🔗</a></h4>
+<p>26.2 起 Vulkan 下会把 <code>gl_VertexID</code> 自动替换成 <code>gl_VertexIndex</code>。
+这意味着<strong>着色器必须在 OpenGL 与 Vulkan 两个后端下都验证</strong>，
+而玩家用哪个后端服务端并不知道。26.2 snap1 还有过一个 bug（MC-307311）
+导致 Vulkan 下资源包着色器根本加载不了 —— 这类问题只能靠真机双后端验收发现。</p>
+<h3 id="35">3.5 渲染管线升级手册<a class="headerlink" href="#35" title="Permanent link">🔗</a></h3>
+<p>MC 出新版本时，按顺序做：</p>
+<ol>
+<li><strong>读变更日志</strong>。<a href="https://minecraft.wiki/w/Shader">Minecraft Wiki 的 Shader 页面</a>
+   有逐快照的着色器变更表，比任何二手资料都全。重点看：
+   删除/改名的着色器、uniform 块的增删、<code>#include</code> 语法、深度约定。</li>
+<li><strong>对照 §3.2 的暴露面清单</strong>，逐项判断是否受影响。</li>
+<li><strong>开一个 <code>feature/camera-roll-&lt;版本&gt;</code> 分支</strong>，只改 <code>ResourcePack/</code> 与配置。
+   <strong>如果发现必须改 Java，先停下来想清楚为什么</strong> —— 大概率是边界被侵蚀了。</li>
+<li><strong>更新 <code>pack.mcmeta</code></strong> 的 <code>pack_format</code> / <code>min_format</code>。
+   格式号可在 <a href="https://minecraft.wiki/w/Pack_format">Pack format 页面</a>查，不要猜。</li>
+<li><strong>双后端真机验收</strong>：OpenGL 与 Vulkan 各跑一遍
+   面板 addon 的「视角效果」页自测，确认画面确实倾斜且能扳回。</li>
+<li><strong>确认 Sodium 等优化 mod 的兼容性</strong>。历史上 Sodium 会覆盖原版管线导致效果失效；
+   26.3 起官方 OIT 之后这个冲突面缩小了，但仍要实测。</li>
+<li>合回 main，更新<a href="../../features/camera-roll/">视角滚转系统</a>文档。</li>
+</ol>
+<hr />
+<h2 id="4-apil2-l3">4. 服务端 API（L2 / L3）<a class="headerlink" href="#4-apil2-l3" title="Permanent link">🔗</a></h2>
+<h3 id="41-paper-api">4.1 Paper API 与弃用政策<a class="headerlink" href="#41-paper-api" title="Permanent link">🔗</a></h3>
+<p>Paper 有明确的<a href="https://docs.papermc.io/paper/dev/roadmap/">弃用政策</a>：</p>
+<ul>
+<li>标了 <code>@Deprecated</code> 的 API 仍可用，但不承诺不会进一步被标记为待移除</li>
+<li>标了 <code>forRemoval</code> + <code>@ApiStatus.ScheduledForRemoval</code> 的，<strong>只会在 MC 大版本上移除</strong>，
+  且会留出足够的迁移时间</li>
+</ul>
+<p><strong>实践规则</strong>：</p>
+<ul>
+<li>构建时<strong>不要屏蔽 deprecation 警告</strong>。它是免费的预警系统 ——
+  项目已经做过一轮「清废弃 API 到零警告」，这个状态要守住。</li>
+<li><code>paper-plugin.yml</code> 的 <code>api-version</code> 声明目标版本（当前 <code>26.2</code>）。
+  低于这个版本的服务器会拒绝加载插件，这是<strong>特性不是缺陷</strong>：
+  与其让插件在不兼容的服务端上以奇怪的方式半死不活，不如干脆不加载。</li>
+</ul>
+<h3 id="42-metadata">4.2 实体 metadata 索引 —— 最危险的一处<a class="headerlink" href="#42-metadata" title="Permanent link">🔗</a></h3>
+<p><code>DESIGN.md</code> §5.7 记录了 26.2 实证得到的 Display entity metadata 索引表
+（<code>TRANSLATION</code>=11、<code>LEFT_ROTATION</code>=13、<code>BLOCK_STATE</code>=23 等）。
+这张表是<strong>反汇编 Mojang jar 得到的</strong>，不是任何公开 API 的一部分。</p>
+<blockquote>
+<p><strong>升级 MC 版本时必须重新验证这张表。</strong></p>
+</blockquote>
+<p>索引变化不会编译失败、不会抛异常，症状是「碎块全部糊成一坨」
+或者「方块外观变成空气」——而且很可能只在某些方块类型上出现。</p>
+<p><strong>验证方式</strong>（按可靠性排序）：</p>
+<ol>
+<li>反汇编目标版本的 <code>net/minecraft/world/entity/Display.class</code>，
+   按 <code>SynchedEntityData.defineId</code> 的调用顺序推定</li>
+<li>对照 packetevents 对应版本的实现</li>
+<li>真机上生成一个骰子，肉眼确认位置/朝向/外观三项都对</li>
+</ol>
+<p><strong>索引集中在一个地方：<code>common/view/DisplayMetadata.java</code>。升级时只改这一处。</strong></p>
+<p>这曾经是五份拷贝（<code>PhysicsObject</code>、<code>PhysicsRagdoll</code>、<code>PhysicsCharacter</code>、
+<code>ClusterView</code>、<code>FieldView</code> 各写一份），已于 2026-08-06 合并（<code>DESIGN.md</code> §25.9）。
+合并的理由值得记住，因为它适用于所有版本耦合的常量：</p>
+<blockquote>
+<p>五份拷贝是<strong>升级成本的乘数</strong> —— 每次 MC 升级要改五个地方，
+而漏掉一份的症状是「骰子和碎块都正常，只有布娃娃糊了」
+或者「黑洞的外观变成空气」这类局部错乱。
+人的第一反应绝不会是「metadata 索引表错了」，于是要查很久。
+一份拷贝把「五次犯错机会」压成一次。</p>
+</blockquote>
+<p><strong>配套的绊线</strong>：<code>DisplayMetadataTest</code> 会断言三件事 ——
+索引互不重复、都落在 Entity 基类的 8 个槽位之后、以及<strong>与 26.2 基线值逐一相等</strong>。
+最后一条是有意为之：任何人改了索引，这条测试就会红，
+强制他确认是否已按本手册重新验证过，并同步更新测试与 <code>DESIGN.md</code> §5.7。</p>
+<p><strong>另一个易混点</strong>（合并时顺带修掉的）：不要把 <code>DisplayMetadata.TELEPORT_DURATION</code>
+（metadata <strong>索引</strong>，值 10）和各表现类里的 <code>TELEPORT_TICKS</code>
+（往那个索引里<strong>写的值</strong>，2 tick）搞混。它们原本都叫 <code>TELEPORT_DURATION</code>。</p>
+<h3 id="43-packetevents">4.3 packetevents<a class="headerlink" href="#43-packetevents" title="Permanent link">🔗</a></h3>
+<p>packetevents 是<strong>前置插件</strong>而非内嵌依赖（<code>DESIGN.md</code> D8），
+所以服主可能装着比我们编译时更新或更旧的版本。</p>
+<ul>
+<li>升级 MC 版本时，先确认 packetevents 已支持目标版本（看它的 release note）</li>
+<li><code>libs.versions.toml</code> 里的版本号是<strong>编译期</strong>版本；运行期以服主装的为准</li>
+<li>因此<strong>不要用 packetevents 的内部 API</strong>，只用公开的 wrapper 类</li>
+</ul>
+<h3 id="44-mojang">4.4 Mojang 官方服务端方向<a class="headerlink" href="#44-mojang" title="Permanent link">🔗</a></h3>
+<p>目前没有官方的服务端插件 API，Paper 仍是唯一现实选择。
+但有两个信号值得跟进：</p>
+<ul>
+<li><strong>Minecraft Server Management Protocol</strong>（26.2 已到 3.0.0）—— 目前只覆盖运维管理
+  （心跳、状态查询），与插件 API 无关，但说明 Mojang 在正式化服务端的对外接口</li>
+<li><strong><code>/posteffect</code> 这类命令</strong>（§3.4）—— Mojang 正在把过去只能靠 hack 实现的客户端表现
+  开成官方的、服务端可控的接口。<strong>这个趋势对本项目是纯利好</strong>，
+  每出现一个这样的命令，就有一处 hack 可以退役</li>
+</ul>
+<hr />
+<h2 id="5-l1">5. 物理引擎（原 L1）：这一层已经不存在了<a class="headerlink" href="#5-l1" title="Permanent link">🔗</a></h2>
+<p>引擎自研之后，物理层<strong>没有任何外部 API 面</strong>可跟。</p>
+<p>原先这一节写的是「怎么升 jolt-jni」：改版本号、跑冒烟测试、读 sources jar 查 API 变更、
+关注 native 体积、保证三平台覆盖不退化。这些工作现在<strong>一件都不需要做</strong>。</p>
+<p>替代它的是另一类工作 —— <strong>求解器自己的回归</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>要盯的</th>
+<th>怎么盯</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>改了求解器常量之后手感是否退化</td>
+<td><code>physics</code> 模块的标定测试（摩擦、重力系数、地形对齐、撞击记录）</td>
+</tr>
+<tr>
+<td>改了碰撞形状 / 合盒之后几何是否等价</td>
+<td>质量、质心、惯性张量应当一个数都不变</td>
+</tr>
+<tr>
+<td>改了接触生成之后是否引入幽灵碰撞</td>
+<td>平地滑行不应被横推</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition important">
+<p class="admonition-title">求解器常量不是配置项</p>
+<p><code>SUB_STEPS</code>、<code>POSITION_ITERATIONS</code> 这些写死在代码里，改它们不是「换一种手感」而是
+「可能解不出来」。动之前先读<a href="../../engine/#那些写死的数字">引擎总览 · 那些写死的数字</a>。</p>
+</div>
+<p>已知的量化偏差（恢复系数欠松弛、动摩擦偏低、落坑容差）列在
+<a href="../../engine/limits/#已知偏差">性能与上限</a>，调参前先读一遍，否则会把它们当成 bug 去追。</p>
+<hr />
+<h2 id="6">6. 版本支持矩阵与分支模型<a class="headerlink" href="#6" title="Permanent link">🔗</a></h2>
+<h3 id="61-mc">6.1 只支持一个 MC 版本<a class="headerlink" href="#61-mc" title="Permanent link">🔗</a></h3>
+<p><strong>这是一个决策，不是懒惰。</strong></p>
+<p>理由：项目的表现层是<strong>裸发包</strong>（<code>DESIGN.md</code> D8），metadata 索引、包结构、
+着色器管线三者全都绑死在具体协议版本上。做多版本兼容意味着
+维护三套索引表 + 三套着色器 + 一层反射抽象，
+而收益是让停在旧版的服主也能用 —— 这笔账在当前的人力下算不过来。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>策略</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>主线支持</strong></td>
+<td>最新正式版（当前 26.2）</td>
+</tr>
+<tr>
+<td><strong>新版本适配</strong></td>
+<td>MC 正式版发布后开分支适配，验收通过后合入 main 并发新版本</td>
+</tr>
+<tr>
+<td><strong>旧版本</strong></td>
+<td>保留最后一个支持该版本的 tag，不再回补</td>
+</tr>
+</tbody>
+</table>
+<p>服主停在旧版本时，<code>api-version</code> 会让插件直接拒绝加载 —— 这是明确的失败，
+好过加载成功然后碎块糊成一坨。</p>
+<h3 id="62">6.2 分支模型<a class="headerlink" href="#62" title="Permanent link">🔗</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>main                    ← 始终对应「当前支持的 MC 正式版」，始终可发布
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a> ├─ feature/&lt;主题&gt;       ← 功能开发，合入前必须全量测试绿
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a> └─ feature/camera-roll-&lt;版本&gt;   ← MC 版本适配，只碰 ResourcePack 与配置
+</code></pre></div>
+<p><strong>MC 版本适配单独开分支的理由</strong>：快照期的适配是「跟着快照反复改」的，
+而快照本身会变（26.2 snap1 的 Vulkan 加载 bug 到 snap2 才修）。
+放在独立分支上，main 始终对应一个已验收的稳定组合。</p>
+<p><code>feature/camera-roll-26.3</code> 就是当前的实例：代码已就绪（66f168e），
+<strong>待 26.3 正式版发布 + 真机双后端验收</strong>后合入。</p>
+<h3 id="63">6.3 一个版本组合就是一个「已验收的四元组」<a class="headerlink" href="#63" title="Permanent link">🔗</a></h3>
+<p>发布时要记录的不只是插件版本，而是：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>GTRigidPhysics 1.0.0
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  ├─ Minecraft   26.2
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  ├─ Paper API   26.2.build.65-beta
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  ├─ packetevents 2.13.0（前置，最低版本）
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  └─ pack_format 88
+</code></pre></div>
+<p>这四项里任何一项变了，都要重新过一遍验收。写进 release note，
+服主报问题时第一步就是核对这个四元组。</p>
+<p>（这里从前还有一行 <code>jolt-jni 6.0.0</code> —— 引擎自研之后不再需要记录它。）</p>
+<hr />
+<h2 id="7">7. 升级操作总表<a class="headerlink" href="#7" title="Permanent link">🔗</a></h2>
+<p>MC 出新正式版时，逐项勾。<strong>没勾完不合 main。</strong></p>
+<h3 id="_2">准备<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h3>
+<ul>
+<li>[ ] 读 <a href="https://minecraft.wiki/w/Shader">Shader 页面</a>的变更表，列出受影响的着色器</li>
+<li>[ ] 确认 packetevents 已发布支持该版本的版本</li>
+<li>[ ] 确认 Paper 已有该版本的 API 构建</li>
+<li>[ ] 查 <a href="https://minecraft.wiki/w/Pack_format">Pack format</a> 确定新的格式号</li>
+</ul>
+<h3 id="l4">渲染管线（L4）<a class="headerlink" href="#l4" title="Permanent link">🔗</a></h3>
+<ul>
+<li>[ ] 对照 §3.2 的四项暴露面逐项适配</li>
+<li>[ ] 更新 <code>pack.mcmeta</code> 的 <code>pack_format</code> / <code>min_format</code></li>
+<li>[ ] <strong>确认没有改动任何 <code>.java</code> 文件</strong> —— 改了就说明边界被侵蚀，回去想清楚</li>
+<li>[ ] OpenGL 后端真机验收（面板 addon 的「视角效果」页）</li>
+<li>[ ] Vulkan 后端真机验收（26.2 起）</li>
+<li>[ ] Sodium 等优化 mod 共存验收</li>
+<li>[ ] 评估本版本有没有新的官方能力可以替换掉现有 hack（参考 §3.4）</li>
+</ul>
+<h3 id="apil2-l3">服务端 API（L2 / L3）<a class="headerlink" href="#apil2-l3" title="Permanent link">🔗</a></h3>
+<ul>
+<li>[ ] <strong>重新验证 Display entity metadata 索引表</strong>（§4.2）——
+      只需改 <code>common/view/DisplayMetadata.java</code> 一处，
+      改完 <code>DisplayMetadataTest</code> 的基线断言会红，同步更新它与 <code>DESIGN.md</code> §5.7</li>
+<li>[ ] 更新 <code>paper-plugin.yml</code> 的 <code>api-version</code></li>
+<li>[ ] 更新 <code>libs.versions.toml</code> 的 <code>paper-api</code> 与 <code>packetevents</code></li>
+<li>[ ] 构建无 deprecation 警告；有的话逐条迁移而不是屏蔽</li>
+</ul>
+<h3 id="nativel1">native（L1）<a class="headerlink" href="#nativel1" title="Permanent link">🔗</a></h3>
+<ul>
+<li>[ ] 三平台 native 齐全（Windows64 / Linux64 / Linux_ARM64）</li>
+</ul>
+<h3 id="_3">验收<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h3>
+<ul>
+<li>[ ] <code>./gradlew build -PrunTests</code> 全量绿</li>
+<li>[ ] 走一遍 <code>docs/internal/acceptance-checklist.md</code></li>
+<li>[ ] release note 里写全 §6.3 的版本四元组</li>
+<li>[ ] 更新<a href="../../features/camera-roll/">视角滚转系统</a>与<a href="../../guide/config/">配置指南</a></li>
+</ul>
+<hr />
+<h2 id="8">8. 一句话总结<a class="headerlink" href="#8" title="Permanent link">🔗</a></h2>
+<p><strong>把每个版本都会变的东西（渲染管线）关进资源包，把每季度会变的东西（native 库）
+关进 <code>physics</code>，把不变的东西（物理与决策逻辑）放进 <code>common</code>。</strong></p>
+<p>26.3 的管线重写没有碰一行 Java 代码，说明这套边界是成立的。
+后续要做的不是加固它，而是<strong>守住它</strong>，并在每次官方开放新能力时
+（<code>/posteffect</code> 是第一个）主动退役掉一处 hack。</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      The api / common / physics modules are MIT licensed; the plugin itself is GPL-3.0
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/GTedd/GTRigidPhysics" target="_blank" rel="noopener" title="GitHub 仓库 / GitHub repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.tracking", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

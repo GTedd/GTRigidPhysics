@@ -1,0 +1,4310 @@
+
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Minecraft Paper 26.2 原版刚体物理引擎 —— 建筑坍塌、载具、骰子、小物件物理模拟，纯服务端插件，零客户端 mod">
+      
+      
+        <meta name="author" content="GTedd">
+      
+      
+        <link rel="canonical" href="https://gtedd.github.io/GTRigidPhysics/features/camera-roll/">
+      
+      
+        <link rel="prev" href="../block-collision/">
+      
+      
+        <link rel="next" href="../craftengine/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="zh">
+        
+          <link rel="alternate" href="../../en/features/camera-roll/" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>视角滚转 - GTRigidPhysics</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/md-export.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="GTRigidPhysics" class="md-header__button md-logo" aria-label="GTRigidPhysics" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GTRigidPhysics
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              视角滚转
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="deep-orange"  aria-label="切换到深色模式 / Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式 / Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="deep-orange"  aria-label="切换到浅色模式 / Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式 / Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="选择当前语言">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="zh" class="md-select__link">
+              简体中文
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../en/features/camera-roll/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/GTedd/GTRigidPhysics" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GTedd/GTRigidPhysics
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../guide/quick-start/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  上手
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../collapse/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  功能
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../addons/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  扩展
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  接入 API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../engine/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  引擎原理
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../dev/build/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  参与开发
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GTRigidPhysics" class="md-nav__button md-logo" aria-label="GTRigidPhysics" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GTRigidPhysics
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/GTedd/GTRigidPhysics" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GTedd/GTRigidPhysics
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    上手
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    上手
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    快速开始
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    命令参考
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../guide/config/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    配置
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    配置
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    config.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    analysis.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    structure.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/view/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    view.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/collision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    collision.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/physics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    physics.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/budget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    budget.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/materials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    materials.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/settle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    settle.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/impact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    impact.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/tnt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    tnt.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/systems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    systems.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/camera-roll/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    camera-roll.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/config/resource-pack/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    resource-pack.yml
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    性能与预算
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    故障排查
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    功能
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    功能
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../collapse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    建筑坍塌
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../explosion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    爆炸飞溅
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../settle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    落地规则
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../impact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    撞击后果
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tnt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    物理 TNT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../materials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    物理材质
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../block-collision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    真实碰撞箱与交互
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    视角滚转
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    视角滚转
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        概述
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        为什么视角滚转要靠一颗粒子来传
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        前置条件
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本兼容
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="版本兼容">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2622026-08-06" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.2（已适配，2026-08-06）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#263" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.3（风险，跟踪中）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        前向兼容原则
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        精度限制
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四种字节的分工
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="四种字节的分工">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        两种操作码
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三种震感来源
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三种震感来源">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 爆炸冲击
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 大型坍塌震感（不自动触发）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 跟随碎块翻滚
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#camerarollservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CameraRollService 的核心设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CameraRollService 的核心设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三种来源的叠加
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        稳态零开销
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        每 tick 调用而非跟着位姿广播走
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        单个玩家最多叠加 4 个震动源
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        发包节流
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="发包节流">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        节流的代价
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        回正的特殊处理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        资源包下发流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="资源包下发流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sha-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SHA-1 是缓存键
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        怎么自测客户端
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        降级兜底：没有着色器时的受击倾斜
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        使用边界与注意事项
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../craftengine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CraftEngine 兼容
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../objects/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    物体模板
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_10" id="__nav_3_10_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    物体模板
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../objects/dice/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    骰子
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../objects/vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    载具模板
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../objects/domino-and-plank/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    多米诺与木板
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../objects/fun-objects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    趣味物体
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../addons/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    扩展
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    扩展
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/panel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    管理面板
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/toolbelt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    工具腰带
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    载具 addon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/writing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写自己的 addon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    接入 API
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    接入 API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bodies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    刚体
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/collapse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    坍塌与碎屑
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    事件
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/materials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    材质 · 效果 · 仿真
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fields/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    力场
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/vehicles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    载具 · 机关 · 角色
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    完整示例
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://gtedd.github.io/GTRigidPhysics/javadoc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API 文档 (Javadoc)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../engine/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    引擎原理
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    引擎原理
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/module-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    模块架构
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/xpbd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XPBD 求解器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/shape/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    碰撞形状与合盒
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    接触生成
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/constraints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    约束系统
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/mass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    质量与惯性张量
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/forces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    力系统
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/force-ledger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    力记账
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/terrain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    地形
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/threading/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    线程与数据流
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/view-packets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    表现层发包
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/vehicle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    载具实现
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/character/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    虚拟角色
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/ragdoll/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    布娃娃
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engine/limits/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    性能与上限
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参与开发
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    参与开发
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev/build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    构建项目
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev/workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    开发流程
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    贡献指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev/translating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    翻译文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev/export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导出 Markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev/version-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    版本适配手册
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev/release/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    发布流程
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        概述
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        为什么视角滚转要靠一颗粒子来传
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        前置条件
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本兼容
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="版本兼容">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2622026-08-06" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.2（已适配，2026-08-06）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#263" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.3（风险，跟踪中）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        前向兼容原则
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        精度限制
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四种字节的分工
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="四种字节的分工">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        两种操作码
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三种震感来源
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三种震感来源">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 爆炸冲击
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 大型坍塌震感（不自动触发）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 跟随碎块翻滚
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#camerarollservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CameraRollService 的核心设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CameraRollService 的核心设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三种来源的叠加
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        稳态零开销
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        每 tick 调用而非跟着位姿广播走
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        单个玩家最多叠加 4 个震动源
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        发包节流
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="发包节流">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        节流的代价
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        回正的特殊处理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        资源包下发流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="资源包下发流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sha-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SHA-1 是缓存键
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        怎么自测客户端
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        降级兜底：没有着色器时的受击倾斜
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        使用边界与注意事项
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+  
+
+
+  
+  
+
+  <div class="gtrp-md-export" title="Markdown 原文，供翻译与 AI 阅读">
+    <a href="../camera-roll.md" download>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.56 18H3.44C2.65 18 2 17.37 2 16.59V7.41C2 6.63 2.65 6 3.44 6h17.12c.79 0 1.44.63 1.44 1.41v9.18c0 .78-.65 1.41-1.44 1.41M3.44 6.94c-.26 0-.48.21-.48.47v9.19c0 .25.22.46.48.46h17.12c.26 0 .48-.21.48-.46V7.41c0-.26-.22-.47-.48-.47zm1.45 8.25V8.81h1.92l1.92 2.35 1.92-2.35h1.93v6.38h-1.93v-3.66l-1.92 2.35-1.92-2.35v3.66zm12.01 0-2.9-3.1h1.94V8.81h1.92v3.28h1.93z"/></svg>下载本页 Markdown
+    </a>
+    <a href="../../export/gtrigidphysics-docs-zh.zip" download>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 18H4V8h16m0-2h-8l-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2m-6 3h2v4h3l-4 4-4-4h3Z"/></svg>导出全部（.zip）
+    </a>
+  </div>
+
+
+  
+
+
+
+
+  
+                  
+
+
+  
+    <a href="https://github.com/GTedd/GTRigidPhysics/edit/main/docs/features/camera-roll.md" title="编辑此页" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="_1">视角滚转系统<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
+<h2 id="_2">概述<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
+<p>GTRigidPhysics 的视角滚转系统让玩家在爆炸、坍塌、碎块翻滚时感受到画面倾斜——尽管原版 Minecraft 协议中根本没有"让客户端把画面转个角度"这种包。这里的做法是：服务端把角度编码进一颗粒子的颜色，由随插件分发的<strong>资源包着色器</strong>在客户端解码并旋转整个画面。</p>
+<p>参考：DESIGN.md 未设独立章节，代码分布在 <code>common/shader</code> 和 <code>paper/shader</code> 包下。</p>
+<hr />
+<h2 id="_3">为什么视角滚转要靠一颗粒子来传<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
+<p>原版协议里没有摄像机 roll 的控制通道。着色器唯一能读到的、由服务端控制的逐帧数据，就是屏幕上像素的颜色。</p>
+<p>因此整个方案是：</p>
+<ol>
+<li>服务端发一颗颜色被精确编码过的 <code>ENTITY_EFFECT</code> 粒子，位置取玩家脚下（紧贴摄像机，保证一定在视锥内）</li>
+<li>资源包覆盖 <code>core/particle.vsh</code> 着色器，认出"数据粒子"，把它画到屏幕角落一个约定像素上</li>
+<li>后处理管线（<code>core/positional_color.fsh</code> 等）从那个像素解码出角度，旋转整个画面</li>
+</ol>
+<p>粒子在这里不是特效，而是一根<strong>单向数据线</strong>。</p>
+<hr />
+<h2 id="_4">前置条件<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
+<p><strong>视角滚转必须配合资源包才有效果</strong>，且客户端需要满足：</p>
+<ol>
+<li>开启"Improved Transparency"（旧称"Fabulous! / 华丽"）画质选项——<strong>最常见的失效原因</strong>。这个选项控制核心着色器（<code>core/</code> 目录）是否被加载，关闭后粒子着色器不会被调用</li>
+<li>没有加载 Iris 光影包。光影包会用自己的管线接管整个渲染，让资源包着色器被整体忽略</li>
+<li>Sodium 版本 &gt;= 0.9.0（26.2 对应版本线）。更早版本有一个粒子着色器 uniform 归零的 bug，导致着色器读到的角度永远是 0</li>
+</ol>
+<hr />
+<h2 id="_5">版本兼容<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
+<h3 id="2622026-08-06">26.2（已适配，2026-08-06）<a class="headerlink" href="#2622026-08-06" title="Permanent link">🔗</a></h3>
+<p>26.2 引入了<strong>反向深度缓冲</strong>（near=1、far=0），旧实现里 marker 四边形用 <code>gl_Position.z = 0.0</code>，
+在反向深度下几乎是最远，永远过不了深度测试——整条管线<strong>静默失效</strong>：着色器照常编译、
+日志一切正常，但 marker 从不落笔，画面永不滚转。同时 26.1 起的原版 <code>particle.vsh</code> 已把
+光照贴图采样从 <code>texelFetch(Sampler2, UV2 / 16, 0)</code> 换成 <code>sample_lightmap(Sampler2, UV2)</code>。</p>
+<p>修复动作（对齐上游 ShaderSelectorV4 的 <code>26.2</code> tag，该 tag 已实测）：</p>
+<table>
+<thead>
+<tr>
+<th>位置</th>
+<th>改动</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>core/particle.vsh</code></td>
+<td>import：<code>minecraft:globals.glsl</code> → <code>minecraft:sample_lightmap.glsl</code></td>
+</tr>
+<tr>
+<td><code>core/particle.vsh</code></td>
+<td>marker 四边形 <code>z = 0.0</code> → <code>1.0</code>（反向深度下为最近，必过深度测试）</td>
+</tr>
+<tr>
+<td><code>core/particle.vsh</code></td>
+<td>光照贴图：<code>texelFetch(Sampler2, UV2 / 16, 0)</code> → <code>sample_lightmap(Sampler2, UV2)</code></td>
+</tr>
+<tr>
+<td><code>pack.mcmeta</code></td>
+<td>补 <code>pack_format: 88</code>，保留 <code>min_format 88</code> / <code>max_format 9999</code></td>
+</tr>
+<tr>
+<td><code>assets/sodium/</code></td>
+<td>整目录删除（Sodium 0.9.x 迁移到 Blaze3D，旧覆盖会污染区块渲染）</td>
+</tr>
+</tbody>
+</table>
+<p>其余文件（<code>particle.fsh</code>、<code>post_effect/transparency.json</code>、<code>data.fsh</code>、
+<code>marker_settings.glsl</code>）经 26.1.2 与 26.2 客户端 jar 逐字节比对，确认在 26.2 上有效，
+无需改动。编码端 <code>ShaderRollProtocol</code>（G=251 立刻设定 / G=252 最短弧插值）与上游
+<code>data.fsh</code> 的 op 0–4 语义一致，同样不动。</p>
+<h3 id="263">26.3（风险，跟踪中）<a class="headerlink" href="#263" title="Permanent link">🔗</a></h3>
+<p>Mojang 在 26.3-snapshot-2 移除了 <code>post_effect/transparency.json</code> 后处理链（半透明改用引擎端
+OIT 合成），<code>minecraft:particles</code> 帧缓冲目标随之消失；26.3-snapshot-5 起着色器改由 ShaderC
+编译、<code>#moj_import</code> 换成 <code>#include</code>、in/out 需显式声明 location。本系统的两个挂钩点
+（transparency 链注入 + 粒子缓冲数据通道）在 26.3 双双作废，纯资源包全屏旋转能否存活存疑。</p>
+<p>当前策略：跟踪上游 ShaderSelectorV4 的 <code>end_of_frame</code> + OIT 移植，验证 <code>end_of_frame</code>
+扩展点是否足够承载全屏旋转；若不可行，转向无着色器兜底（受击倾斜动画）或客户端 mod 路线。</p>
+<h3 id="_6">前向兼容原则<a class="headerlink" href="#_6" title="Permanent link">🔗</a></h3>
+<p>本项目只向上更新。<code>pack.mcmeta</code> 的 <code>max_format: 9999</code> 保证未来客户端<strong>接受</strong>本包而不会
+拒收——但「接受」不等于「生效」，每个大版本都要按上表逐项核对一次。</p>
+<hr />
+<h2 id="_7">精度限制<a class="headerlink" href="#_7" title="Permanent link">🔗</a></h2>
+<p>协议只有 <strong>8 位角度</strong>，即 256 个刻度均分 360°，每刻度 <strong>1.40625°</strong>。</p>
+<ul>
+<li>比这更小的角度变化在线路上无法表达——差异小于 1.4° 的两个角度会编码成完全相同的字节</li>
+<li>这是协议的硬上限，不是本系统的实现取舍</li>
+<li>好在它远低于人眼对画面倾斜的感知阈值（约 5~10°），做震动和倾斜都够用</li>
+<li>精度限制也是发包节流的基础：稳态下绝大多数 tick 的角度变化都在 1.4° 以内，这些包被跳过，节省了大量流量</li>
+</ul>
+<hr />
+<h2 id="_8">四种字节的分工<a class="headerlink" href="#_8" title="Permanent link">🔗</a></h2>
+<p>一颗粒子的 ARGB 四个字节分别承担不同角色：</p>
+<table>
+<thead>
+<tr>
+<th>通道</th>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A（Alpha）</td>
+<td>251</td>
+<td>校验位之一</td>
+</tr>
+<tr>
+<td>R（Red）</td>
+<td>254</td>
+<td>marker 标志，着色器靠它区分"数据粒子"与普通粒子</td>
+</tr>
+<tr>
+<td>G（Green）</td>
+<td>251 或 252</td>
+<td>操作码：251 = 立刻设定，252 = 最短弧插值</td>
+</tr>
+<tr>
+<td>B（Blue）</td>
+<td>0~255</td>
+<td>角度值本身</td>
+</tr>
+</tbody>
+</table>
+<p>用 A 和 R <strong>两个字节</strong>做校验而不是一个，是因为普通粒子的颜色是玩家可见的：单字节校验意味着任何一颗恰好红到 254 的粒子都会被误认成数据粒子，让画面莫名其妙地歪掉。两个字节把误判概率压到可以忽略。</p>
+<h3 id="_9">两种操作码<a class="headerlink" href="#_9" title="Permanent link">🔗</a></h3>
+<table>
+<thead>
+<tr>
+<th>操作码</th>
+<th>Green 值</th>
+<th>含义</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>立刻设定</td>
+<td>251</td>
+<td>画面下一帧就跳到目标角度</td>
+<td>震动（逐 tick 变化，防止客户端插值追不上）</td>
+</tr>
+<tr>
+<td>最短弧插值</td>
+<td>252</td>
+<td>着色器以固定角速度转向目标</td>
+<td>回正、一次性目标角</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_10">瞬时模式下"立刻"是真的吗<a class="headerlink" href="#_10" title="Permanent link">🔗</a></h4>
+<p>严格说是"客户端下一帧"，即 50 ms 以内。对震动的 2~3 Hz 频率来说，这已经是瞬时了。</p>
+<p>必须用瞬时模式是因为：震动逐 tick 变，插值模式下客户端以固定角速度慢慢追一个每 tick 都在变化的目标，永远追不上——表现为震动被抹平成一个迟钝的缓慢漂移。</p>
+<h4 id="_11">刻度量化差异<a class="headerlink" href="#_11" title="Permanent link">🔗</a></h4>
+<p>瞬时模式按 255 刻度量化（<code>b/255</code>），插值模式按 256 刻度量化（<code>b/256</code>）。不一致是<strong>刻意的</strong>：</p>
+<ul>
+<li>插值模式是循环的——着色器里 <code>1.0 = 0.0</code>。若也按 255 量化，<code>255/255 = 1.0</code> 就与 <code>0/255 = 0.0</code> 撞在一起，白白浪费一个刻度</li>
+<li>瞬时模式不是循环的——角度值直接设定，不需要考虑首尾重合</li>
+</ul>
+<hr />
+<h2 id="_12">三种震感来源<a class="headerlink" href="#_12" title="Permanent link">🔗</a></h2>
+<h3 id="1">1. 爆炸冲击<a class="headerlink" href="#1" title="Permanent link">🔗</a></h3>
+<p>爆炸瞬间猛地滚一下，然后震荡回正。</p>
+<p>关键参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>degrees</td>
+<td>14.0</td>
+<td>爆心处的初始振幅，再按爆炸威力开方缩放</td>
+</tr>
+<tr>
+<td>radius</td>
+<td>20.0</td>
+<td>影响半径（格），也按威力缩放</td>
+</tr>
+<tr>
+<td>frequency</td>
+<td>2.4 Hz</td>
+<td>震荡频率，接近真实爆炸冲击后的晃动节奏</td>
+</tr>
+<tr>
+<td>decay</td>
+<td>0.7 s</td>
+<td>衰减时间常数，约 2 秒后彻底消失</td>
+</tr>
+</tbody>
+</table>
+<p><strong>威力对振幅的影响开方而非线性</strong>：原版威力 1（火球）到 6（充能苦力怕）是 6 倍差距，线性放大会让充能苦力怕直接把画面顶到上限——而那本该是留给"贴脸挨了一发"的表现空间。开方后 1 对 6 的振幅差约 2.45 倍，画面表现分层合理。</p>
+<p><strong>震荡方向</strong>取决于震源在玩家的左侧还是右侧。在爆炸那一瞬间定死，之后玩家转身也不改——冲击波不会跟着人转。</p>
+<h3 id="2">2. 大型坍塌震感（不自动触发）<a class="headerlink" href="#2" title="Permanent link">🔗</a></h3>
+<p>持续而轻微的摇晃，与爆炸冲击的"尖锐"形成对比。</p>
+<div class="admonition warning">
+<p class="admonition-title">坍塌链路不会自动调它</p>
+<p>引擎内部已经摘掉了「坍塌 → 震屏」这条自动连线。碎块本身与落地音效就是坍塌的表现，
+再叠一层画面滚转既不还原（塌一堵墙不该让十米外的人天旋地转），又会与爆炸的震感混淆
+—— 玩家分不清刚才是炸了还是塌了。</p>
+<p>本节配的是<strong>显式调用</strong>那条路径：对外 API 的 <code>CameraEffectService#collapseAt</code>，
+以及命令与面板的自测入口。想让坍塌自动震屏，在自己的插件里监听
+<code>StructureCollapseStartEvent</code> 再调 <code>collapseAt</code> 即可。</p>
+</div>
+<p>关键参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>degrees</td>
+<td>6.0</td>
+<td>基准振幅，远小于爆炸——避免整场坍塌一直在晕</td>
+</tr>
+<tr>
+<td>radius</td>
+<td>40.0</td>
+<td>比爆炸大得多：一栋楼塌下来，隔着几十格也该感觉到</td>
+</tr>
+<tr>
+<td>frequency</td>
+<td>1.1 Hz</td>
+<td>"沉重的晃动"而非"尖锐的冲击"</td>
+</tr>
+<tr>
+<td>decay</td>
+<td>1.6 s</td>
+<td>衰减时间，余震拖得更久</td>
+</tr>
+<tr>
+<td>min-blocks</td>
+<td>40</td>
+<td>低于这个方块数的坍塌完全不产生震感</td>
+</tr>
+<tr>
+<td>full-blocks</td>
+<td>400</td>
+<td>达到这个方块数即为满幅，超过不再增强</td>
+</tr>
+</tbody>
+</table>
+<p>规模换算公式：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">blockCount</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">minBlocks</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">       </span><span class="c1">// 拆两格墙不该晃</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">blockCount</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">fullBlocks</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span><span class="w">       </span><span class="c1">// 再大也没区别了</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">blockCount</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">minBlocks</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">fullBlocks</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">minBlocks</span><span class="p">);</span><span class="w">  </span><span class="c1">// 线性插值</span>
+</code></pre></div>
+<p>没有 <code>fullBlocks</code> 上限的话，一次上万方块的坍塌会把倍率推到荒谬的数值——而超过某个规模之后，再大的坍塌在观感上也没区别了。</p>
+<h3 id="3">3. 跟随碎块翻滚<a class="headerlink" href="#3" title="Permanent link">🔗</a></h3>
+<p>画面跟着身边正在翻滚的巨块一起歪。</p>
+<h4 id="_13">"骑乘"的真实含义<a class="headerlink" href="#_13" title="Permanent link">🔗</a></h4>
+<p>碎块是 <strong>packet 虚拟实体</strong>，服务端根本不存在这些实体，玩家不可能真的骑上去，也不会被它们托住。所以这里做的是空间上的<strong>近邻判定</strong>：玩家身边（<code>followRadius</code> 默认 3.5 格）若有正在翻滚的碎块，就让画面跟着<strong>最近那一个</strong>的姿态歪。</p>
+<p>观感上这是对的——站在正在垮塌的废墟里，天旋地转本来就该来自身边翻滚的巨块，而不是"我坐在某个特定方块上"。</p>
+<h4 id="_14">姿态投影<a class="headerlink" href="#_14" title="Permanent link">🔗</a></h4>
+<p>同一个歪倒的碎块，玩家正面看是左右歪，侧面看则是前后倾——而屏幕滚转只能表达左右歪。所以不能直接取刚体的 roll 欧拉角（那是相对世界轴的），必须把它投影到玩家当前的右方向上：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// 旋转矩阵的第二列 = 局部 +Y 轴转到世界坐标后的方向</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kt">double</span><span class="w"> </span><span class="n">upX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">z</span><span class="p">);</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kt">double</span><span class="w"> </span><span class="n">upY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">z</span><span class="p">);</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kt">double</span><span class="w"> </span><span class="n">upZ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">);</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1">// 玩家右方向（水平面内）</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="kt">double</span><span class="w"> </span><span class="n">rightX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">Math</span><span class="p">.</span><span class="na">cos</span><span class="p">(</span><span class="n">yaw</span><span class="p">);</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="kt">double</span><span class="w"> </span><span class="n">rightZ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">Math</span><span class="p">.</span><span class="na">sin</span><span class="p">(</span><span class="n">yaw</span><span class="p">);</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">// 上方向在「玩家右侧」与「世界竖直」两个轴上的分量之比</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="kt">double</span><span class="w"> </span><span class="n">lateral</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">upX</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rightX</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">upZ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rightZ</span><span class="p">;</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="k">return</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="na">toDegrees</span><span class="p">(</span><span class="n">Math</span><span class="p">.</span><span class="na">atan2</span><span class="p">(</span><span class="n">lateral</span><span class="p">,</span><span class="w"> </span><span class="n">upY</span><span class="p">));</span>
+</code></pre></div>
+<p>用 <code>atan2</code> 而非 <code>asin</code>：碎块可能翻过头（up 朝下），<code>atan2</code> 能正确表达整个 +-180 度，<code>asin</code> 会在超过 90 度时把角度折回来，表现为碎块翻过顶点后画面突然回摆。</p>
+<h4 id="_15">关键参数<a class="headerlink" href="#_15" title="Permanent link">🔗</a></h4>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>followRadius</td>
+<td>3.5</td>
+<td>多近才跟随，不建议超过 6——会让人在废墟区域持续眩晕</td>
+</tr>
+<tr>
+<td>followStrength</td>
+<td>0.75</td>
+<td>跟随强度，1.0 = 完全复制碎块姿态</td>
+</tr>
+<tr>
+<td>followInvert</td>
+<td>false</td>
+<td>方向取反，<strong>只有真机能确认</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="camerarollservice">CameraRollService 的核心设计<a class="headerlink" href="#camerarollservice" title="Permanent link">🔗</a></h2>
+<h3 id="_16">三种来源的叠加<a class="headerlink" href="#_16" title="Permanent link">🔗</a></h3>
+<p>协议只有一个 roll 通道。三种来源要是各发各的，后发的包就会直接覆盖先发的——爆炸震动会被坍塌震感抹掉，谁最后发谁赢。因此叠加必须在服务端算完再发。</p>
+<p>叠加逻辑：
+- <strong>爆炸冲击</strong>和<strong>坍塌震感</strong>是震动——可以直接相加
+- <strong>跟随碎块翻滚</strong>是姿态——一个绝对角度</p>
+<p>三者求和后统一截断到 <code>maxDegrees</code>（默认 25 度）。截断是必需的：连炸几发时若不设上限，画面会转成风车。</p>
+<h3 id="_17">稳态零开销<a class="headerlink" href="#_17" title="Permanent link">🔗</a></h3>
+<p>没有震动、也没有进行中的坍塌时，<code>tick()</code> 第一行就返回。整套机制在稳态下是零开销——这很重要，因为它跑在 <strong>每 tick</strong>。</p>
+<h3 id="tick">每 tick 调用而非跟着位姿广播走<a class="headerlink" href="#tick" title="Permanent link">🔗</a></h3>
+<p>震动频率在 2~3 Hz，按采样定理至少要 6 Hz 才不失真。跟着位姿广播走 2~4 tick 一次（5 Hz）的话，采样率低于信号频率，震荡会混叠成一个缓慢的漂移——看起来就是画面在莫名其妙地慢慢歪来歪去。</p>
+<h3 id="4">单个玩家最多叠加 4 个震动源<a class="headerlink" href="#4" title="Permanent link">🔗</a></h3>
+<p>这不是性能考虑（一次求值就几个浮点乘法），而是<strong>观感</strong>考虑：连炸十发时十个震动叠加会把画面搅成高频抖动，只会让人恶心。超出后丢弃最老的那个——最老的也一定是衰减得最厉害的。</p>
+<hr />
+<h2 id="_18">发包节流<a class="headerlink" href="#_18" title="Permanent link">🔗</a></h2>
+<p>精度只有 1.40625 度/刻度。差异小于一个刻度的两个角度会编码成同一个字节，发出去的是一模一样的包。</p>
+<p><code>ShaderRollChannel</code> 记住每个玩家最后发出去的角度（<code>Map&lt;UUID, Double&gt;</code>），差异不可区分就跳过。这类包在稳态下占绝对多数（震动已衰减完、碎块已静止），不拦掉就是每玩家每秒 20 个纯废包。</p>
+<h3 id="_19">节流的代价<a class="headerlink" href="#_19" title="Permanent link">🔗</a></h3>
+<p>必须在客户端状态可能被重置的时机主动 <strong>forget</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>时机</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资源包重载</td>
+<td>着色器数据纹理被重建成全 0</td>
+</tr>
+<tr>
+<td>玩家重进世界</td>
+<td>渲染状态重建</td>
+</tr>
+<tr>
+<td>玩家死亡重生</td>
+<td>同上，且顶着歪掉画面复活体验极糟</td>
+</tr>
+<tr>
+<td>玩家换世界</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>玩家退出</td>
+<td>清理内存，防止 map 无限增长</td>
+</tr>
+</tbody>
+</table>
+<p>忘记这一步的话：客户端已回到水平、服务端却还记着"上次发的是 30 度"，接下来每一 tick 都判定"值没变，不用发"——玩家的视角滚转<strong>永久失效</strong>，而日志里一切正常。</p>
+<hr />
+<h2 id="_20">回正的特殊处理<a class="headerlink" href="#_20" title="Permanent link">🔗</a></h2>
+<p>回正是唯一一个"目标固定、过程可以交给客户端"的动作。走插值模式（而非瞬时模式），让着色器自己以固定角速度转回水平——比服务端逐 tick 喂中间值节省 20 倍的包。</p>
+<hr />
+<h2 id="_21">资源包下发流程<a class="headerlink" href="#_21" title="Permanent link">🔗</a></h2>
+<p>原版协议只接受一个 URL，客户端自己去下载。服务端没法把文件直接推给它。</p>
+<h3 id="_22">流程<a class="headerlink" href="#_22" title="Permanent link">🔗</a></h3>
+<ol>
+<li><code>./gradlew build</code> 产出 <code>build/distributions/GTRigidPhysics-RP-&lt;版本&gt;.zip</code> 并打印其 SHA-1</li>
+<li>把 zip 传到自己的对象存储 / CDN / 静态站，拿到<strong>直链</strong>（必须是直接下载地址，网盘分享页的 HTML 链接不行）</li>
+<li>把直链和 SHA-1 填到 <code>config.yml</code> 的 <code>resource-pack</code> 段，<code>enabled</code> 改 true</li>
+</ol>
+<h3 id="sha-1">SHA-1 是缓存键<a class="headerlink" href="#sha-1" title="Permanent link">🔗</a></h3>
+<p>客户端用 SHA-1 判断"资源包是否已下载过"。填对了玩家只在资源包真正的变了时才重新下载（几 MB）；填错或留空会导致<strong>每次进服都重新下载</strong>。</p>
+<p>因此本插件在 SHA-1 不合法时<strong>拒绝下发</strong>并在日志说明原因，而不是"不带 hash 照发"——后者能用但很慢，属于最难被发现的那类故障。</p>
+<hr />
+<h2 id="_23">怎么自测客户端<a class="headerlink" href="#_23" title="Permanent link">🔗</a></h2>
+<p>让画面做一个小幅度的来回滚转，就能立即验证客户端那一半是否装好：</p>
+<ul>
+<li>画面没有滚转 → 着色器未加载（检查 Improved Transparency 与 Iris）</li>
+<li>画面滚转了但幅度不对 → Sodium 版本可能太老</li>
+<li>画面滚转了且幅度正确 → 一切正常</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title"><code>/gtrp shader test</code> 已经不在引擎里</p>
+<p>引擎瘦身把 shader 命令一起迁出了。现在的入口有两个：</p>
+<ul>
+<li><a href="../../addons/panel/">管理面板 addon</a> 的「视角效果」页</li>
+<li>自己的插件里调 <code>api.cameraEffects()</code></li>
+</ul>
+<p>「画面歪着停不下来」时的紧急回正同理 —— 面板上有对应按钮。</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">本系统按设计应当整体迁出为 addon</p>
+<p><code>shader</code> 包（视角滚转 + 资源包下发）涉及资源包强制下发，不宜内置于引擎，
+规划中要迁成「视觉体验材质包」addon。</p>
+<p><strong>这一步尚未完成</strong> —— 效果本身目前仍由引擎提供。</p>
+</div>
+<hr />
+<h2 id="_24">降级兜底：没有着色器时的受击倾斜<a class="headerlink" href="#_24" title="Permanent link">🔗</a></h2>
+<p>平滑滚转依赖资源包着色器，而它在很多情况下会<strong>静默失效</strong>：服务端没配置资源包、
+玩家拒绝或下载失败、客户端没开 Improved Transparency、装了 Iris、
+或未来版本移除了着色器挂载点。此时粒子照发、日志正常，但画面纹丝不动。</p>
+<p><code>fallback</code> 配置让系统在这种时候改用<strong>原版受击倾斜动画</strong>（<code>hurt_animation</code>）
+兜住爆炸冲击与坍塌开场——它是原版唯一无需着色器、服务端可控方向的「画面歪一下」。</p>
+<ul>
+<li><strong>能力边界</strong>：幅度固定（客户端算的）、约 0.5 秒自动衰减、自带一小段受击红色渐变。
+  表达不了平滑滚转，也承接不了「跟随碎块翻滚」。</li>
+<li><strong>方向</strong>：震源在玩家左/右侧 → <code>hurtDir = ±90°</code>，与着色器路径的横向投影语义一致；
+  <code>fallback.invert</code> 用于真机纠偏。</li>
+<li><strong>门控</strong>：<code>fallback.min-degrees</code>（默认 4°）只对「本该有至少这么多度滚转」的震动兜底；
+  <code>HurtShakeFallback</code> 内还有 8 tick 的节流，防止连炸时动画被反复重开。</li>
+<li><strong>AUTO 的判定</strong>：服务端没配置资源包 → 一律兜底；配置了则看该玩家的
+  <code>PlayerResourcePackStatusEvent</code>，加载失败/拒绝即兜底。客户端渲染设置
+  （Improved Transparency、Iris）服务端无法观察——加载成功只是「有希望」，
+  不保证真的生效；确知失效时服主应改 <code>fallback: hurt</code> 强制兜底。</li>
+</ul>
+<hr />
+<h2 id="_25">使用边界与注意事项<a class="headerlink" href="#_25" title="Permanent link">🔗</a></h2>
+<ul>
+<li><strong>没有资源包就绝对没有效果</strong>。服务端只发粒子，没有着色器解码的话画面完全不受影响。</li>
+<li><strong>Improved Transparency 是开关</strong>。关闭后核心着色器（<code>core/</code> 目录）不会被加载，是整个系统最常见的失效原因。</li>
+<li><strong>Iris 光影与着色器互斥</strong>。光影包会用自己的管线接管渲染，让资源包着色器被整体忽略。</li>
+<li><strong>精度上限 1.4 度</strong>。比这更小的数值配了也没意义——在线路上根本无法表达。</li>
+<li><strong>节流依赖 forget</strong>。忘了在 <code>ShaderStateListener</code> 中注册新的重置时机，会导致客户端状态与服务端记忆不同步——"功能莫名其妙消失了"。</li>
+<li><strong>回正必须走插值模式</strong>。瞬时回正画面会硬跳，观感差且浪费带宽。</li>
+<li><strong><code>followInvert</code> 只有真机能确认</strong>。左右方向取决于着色器实现细节和屏幕坐标系约定，开发环境无法测试。</li>
+<li><strong>SHA-1 必须填写</strong>。不是可选的完整性校验，是客户端缓存键。不填写会导致玩家每次进服重下几 MB。</li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      api / common / physics 模块以 MIT 授权，插件本体以 GPL-3.0 授权
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/GTedd/GTRigidPhysics" target="_blank" rel="noopener" title="GitHub 仓库 / GitHub repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.tracking", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
