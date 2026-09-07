@@ -1,0 +1,22 @@
+# 文档站的 Python 依赖。放在仓库根而不是 docs/ 下 ——
+# docs/ 里的非 Markdown 文件会被原样拷进 site/，一个 requirements.txt
+# 挂在文档站上没有意义。
+#
+# 用法（不需要 npm，也不需要手动建 venv）：
+#   bun run docs           内部就是 uv run --with-requirements 这一行
+#   uv run --with-requirements requirements-docs.txt mkdocs serve
+#
+# 没有 uv 时的退路：
+#   pip install -r requirements-docs.txt && mkdocs serve
+
+mkdocs>=1.6.1,<2
+mkdocs-material>=9.7.0,<10
+
+# 多语言：docs/xxx.en.md 这类后缀译本 + 语言切换器 + 缺翻译时回退中文。
+# 见 mkdocs.yml 的 plugins.i18n 与 docs/dev/translating.md。
+mkdocs-static-i18n>=1.3.1,<2
+
+# 中文分词。缺了它，搜「视角滚转」这类词组一条都搜不出来 ——
+# mkdocs-material 的 search 插件检测到 jieba 已安装才会启用中文分词。
+# 这不是可选依赖，是中文站能不能搜的开关。
+jieba>=0.42.1

@@ -1,0 +1,354 @@
+# GTRigidPhysics 文档站
+#
+# 与 Javadoc 的分工：
+#   本站（/）          —— 面向服主与玩家：怎么装、怎么配、怎么玩、各系统怎么运作
+#   Javadoc（/javadoc/）—— 面向插件开发者：API 签名、参数、契约
+# 两者同域，导航互通。别把 API 签名往这里搬，那是 Javadoc 的活。
+#
+# 多语言：简体中文是**源语言**，英文（以及未来任何语言）是它的译本。
+#   docs/guide/quick-start.md      中文原文，站点根路径 /guide/quick-start/
+#   docs/guide/quick-start.en.md   英文译本，站点路径 /en/guide/quick-start/
+# 没写译本的页面会自动回退到中文原文并在页首挂一条「未翻译」提示，
+# 不会 404、不会漏出导航。详见 docs/dev/translating.md。
+#
+# 本地预览（不需要 npm）：
+#   bun run docs            → http://127.0.0.1:8000
+#   bun run docs:build      严格模式构建，死链与坏引用会让构建失败
+#   bun run i18n:status     翻译覆盖率与过期译本报告
+# 不装 bun 也行，见 docs/dev/translating.md 里的裸 uv / pip 命令。
+
+site_name: GTRigidPhysics
+site_description: Minecraft Paper 26.2 原版刚体物理引擎 —— 建筑坍塌、载具、骰子、小物件物理模拟，纯服务端插件，零客户端 mod
+site_author: GTedd
+# 影响 sitemap.xml 与每页的 canonical 链接。改仓库归属时这里要跟着改。
+site_url: https://gtedd.github.io/GTRigidPhysics/
+
+repo_url: https://github.com/GTedd/GTRigidPhysics
+repo_name: GTedd/GTRigidPhysics
+edit_uri: edit/main/docs/
+
+copyright: >
+  api / common / physics 模块以 MIT 授权，插件本体以 GPL-3.0 授权
+
+# 直接用仓库里现成的中文文档，不另建一套 —— 一份内容两处维护必然会走样
+docs_dir: docs
+site_dir: site
+
+# 内部材料不进公开站点：调研笔记、验收清单、整改方案都属于过程材料，
+# 公开后容易被当成功能承诺。它们仍留在仓库里可读。
+#
+# 曾经单独排除过 dev/engine-addon-architecture.md —— 它当时处于「被构建发布、
+# 但不在导航里」的两不靠状态。现在它已整体迁入 internal/，随目录一起排除，
+# 面向读者的现状说明重写成了 addons/ 那一组页面。
+exclude_docs: |
+  internal/
+
+theme:
+  name: material
+  # language 由 i18n 插件按当前构建语言覆盖，这里写的只是兜底值
+  language: zh
+  custom_dir: overrides
+  features:
+    - navigation.tabs           # 顶部分区标签：上手 / 功能 / 扩展 / 接入 API / 引擎原理 / 参与开发
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy         # 配置文档里大量 yml 片段，一键复制很实用
+    - content.action.edit
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: deep orange
+      toggle:
+        icon: material/weather-night
+        name: 切换到深色模式 / Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      accent: deep orange
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到浅色模式 / Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+# 译本新鲜度判定：比对译本 front matter 里的 i18n_source_sha 与当前原文指纹，
+# 对不上就让 overrides/partials/i18n-notice.html 挂「本页译文可能已过时」。
+# 写成 hook 而不是插件：逻辑只有三十行，不值得单独发一个包。
+# 放在仓库根的 hooks/ 而不是 overrides/ —— 后者是主题模板目录，
+# MkDocs 的主题加载器会把里面的非模板文件当静态资源往站点里拷。
+hooks:
+  - hooks/i18n_freshness.py
+  # 把每页的 Markdown 源文件也发布出去，另出整站 zip 与 llms.txt。
+  # 译者要带 front matter 的原文，agent 要没有导航噪声的正文 ——
+  # 两边原本都得去 GitHub 上翻仓库，现在站点自己就能给。详见该文件顶部。
+  - hooks/md_export.py
+
+plugins:
+  # i18n 必须排在最前：它会重配 search 插件，让每种语言各自建索引。
+  # 插件内部用 event_priority(-100) 保证自己最后执行，但配置顺序仍以它优先为准。
+  - i18n:
+      # suffix 结构 —— 译本是原文旁边的 `.en.md`，而不是另开一棵目录树。
+      # 选它的理由：回退机制按**相同相对路径**匹配，folder 结构下译者一旦
+      # 给英文页起了英文文件名，回退就断了，缺翻译的页面直接 404。
+      docs_structure: suffix
+      # 缺译本时回退到中文原文，而不是让页面消失。
+      # 配套 overrides/main.html 会在这类页面顶部挂「未翻译」横幅 + 一键开译链接。
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: zh
+          name: 简体中文
+          default: true
+          build: true
+
+        - locale: en
+          name: English
+          build: true
+          site_name: GTRigidPhysics
+          site_description: >-
+            A vanilla-compatible rigid body physics engine for Minecraft Paper 26.2 —
+            structural collapse, vehicles, dice and props. Server-side only, no client mod.
+          copyright: >
+            The api / common / physics modules are MIT licensed; the plugin itself is GPL-3.0
+          # 只翻导航标题，不重复整棵 nav —— 重复一遍就等于多一处会走样的真相。
+          nav_translations:
+            首页: Home
+
+            上手: Getting Started
+            快速开始: Quick Start
+            命令参考: Command Reference
+            配置: Configuration
+            配置总览: Configuration Overview
+            性能与预算: Performance & Budget
+            故障排查: Troubleshooting
+
+            功能: Features
+            建筑坍塌: Structural Collapse
+            爆炸飞溅: Explosion Scatter
+            落地规则: Settle Rules
+            撞击后果: Impact Consequences
+            物理 TNT: Physics TNT
+            物理材质: Physics Materials
+            真实碰撞箱与交互: Real Hitboxes & Interaction
+            视角滚转: Camera Roll
+            CraftEngine 兼容: CraftEngine Support
+            物体模板: Object Templates
+            物体模板总览: Template Overview
+            骰子: Dice
+            载具模板: Vehicle Templates
+            多米诺与木板: Dominoes & Planks
+            趣味物体: Fun Objects
+
+            扩展: Add-ons
+            addon 是什么: What Is an Add-on
+            管理面板: Admin Panel
+            工具腰带: Toolbelt
+            载具 addon: Vehicle Add-on
+            写自己的 addon: Writing an Add-on
+
+            接入 API: Using the API
+            快速接入: Getting Started
+            刚体: Rigid Bodies
+            坍塌与碎屑: Collapse & Debris
+            事件: Events
+            材质 · 效果 · 仿真: Materials, Effects & Simulation
+            力场: Force Fields
+            载具 · 机关 · 角色: Vehicles, Mechanisms & Characters
+            完整示例: Complete Example
+            API 文档 (Javadoc): API Reference (Javadoc)
+
+            引擎原理: Engine Internals
+            引擎总览: Engine Overview
+            模块架构: Module Architecture
+            XPBD 求解器: XPBD Solver
+            碰撞形状与合盒: Shapes & Box Merging
+            接触生成: Contact Generation
+            约束系统: Constraints
+            质量与惯性张量: Mass & Inertia Tensor
+            力系统: Force System
+            力记账: Force Ledger
+            地形: Terrain
+            线程与数据流: Threading & Data Flow
+            表现层发包: View Packets
+            载具实现: Vehicle Implementation
+            虚拟角色: Virtual Characters
+            布娃娃: Ragdolls
+            性能与上限: Performance & Limits
+
+            参与开发: Contributing
+            构建项目: Building
+            开发流程: Development Workflow
+            贡献指南: Contribution Guide
+            翻译文档: Translating the Docs
+            导出 Markdown: Exporting Markdown
+            版本适配手册: Version Migration
+            发布流程: Release Process
+
+          # !!! note "标题" 这类提示框的默认标题也要跟着语言走，
+          # 否则英文页里会冒出中文的「注意 / 警告」。
+          admonition_translations:
+            注意: Note
+            提示: Tip
+            警告: Warning
+            危险: Danger
+            示例: Example
+            引用: Quote
+
+  - search:
+      # 中文必须分词，否则搜「视角滚转」这类词组一条都搜不出来 ——
+      # 默认分隔符只按空格和标点切，而中文正文里根本没有空格。
+      # mkdocs-material 的 search 插件检测到 jieba 已安装就会自动启用中文分词，
+      # 所以 CI 的依赖清单里 jieba 不能少。
+      #
+      # i18n 插件的 reconfigure_search 会把这份配置复制给每种语言，
+      # 英文索引照样用得上这个 separator（它对纯英文文本无害）。
+      separator: '[\s​\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+
+markdown_extensions:
+  - admonition                  # !!! note / warning 提示框
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+  - footnotes
+  - toc:
+      permalink: 🔗
+      toc_depth: 3
+
+# ── 导航 ─────────────────────────────────────────────────────────────
+# 六个顶部标签，按**读者自述**划分（判据见 docs/internal/文档整改方案.md §2.1）：
+#   上手      我要把它装上、调对、出问题时能查
+#   功能      它能做什么、表现成什么样、怎么开关
+#   扩展      我要装附加插件，或者写一个
+#   接入 API  我要在我自己的插件里调它
+#   引擎原理  我要改引擎本身，或想知道它为什么这么算
+#   参与开发  我要给这个仓库提 PR
+#
+# 「引擎原理」刻意排在靠后：它对调参有帮助，但不该挡在「怎么装」前面。
+#
+# 这里只写**一份**中文导航，英文标题由上面的 nav_translations 映射。
+# 新增页面时：先在这里加中文条目，再去 nav_translations 补一条英文标题 ——
+# 漏了的话英文站会直接显示中文标题，不会构建失败，所以别指望编译器提醒。
+nav:
+  # index.md 必须是**顶级**第一项。塞进某个分区里的话，MkDocs 就不再把它判定为
+  # is_homepage，页面标题会变成「GTRigidPhysics - GTRigidPhysics」这种重复。
+  - 首页: index.md
+
+  - 上手:
+      - 快速开始: guide/quick-start.md
+      - 命令参考: guide/commands.md
+      - 配置:
+          - 配置总览: guide/config/index.md
+          - config.yml: guide/config/config.md
+          - analysis.yml: guide/config/analysis.md
+          - structure.yml: guide/config/structure.md
+          - view.yml: guide/config/view.md
+          - collision.yml: guide/config/collision.md
+          - physics.yml: guide/config/physics.md
+          - budget.yml: guide/config/budget.md
+          - materials.yml: guide/config/materials.md
+          - settle.yml: guide/config/settle.md
+          - impact.yml: guide/config/impact.md
+          - tnt.yml: guide/config/tnt.md
+          - systems.yml: guide/config/systems.md
+          - camera-roll.yml: guide/config/camera-roll.md
+          - resource-pack.yml: guide/config/resource-pack.md
+      - 性能与预算: guide/performance.md
+      - 故障排查: guide/troubleshooting.md
+
+  - 功能:
+      - 建筑坍塌: features/collapse.md
+      - 爆炸飞溅: features/explosion.md
+      - 落地规则: features/settle.md
+      - 撞击后果: features/impact.md
+      - 物理 TNT: features/tnt.md
+      - 物理材质: features/materials.md
+      - 真实碰撞箱与交互: features/block-collision.md
+      - 视角滚转: features/camera-roll.md
+      - CraftEngine 兼容: features/craftengine.md
+      - 物体模板:
+          - 物体模板总览: features/objects/index.md
+          - 骰子: features/objects/dice.md
+          - 载具模板: features/objects/vehicle.md
+          - 多米诺与木板: features/objects/domino-and-plank.md
+          - 趣味物体: features/objects/fun-objects.md
+
+  - 扩展:
+      - addon 是什么: addons/index.md
+      - 管理面板: addons/panel.md
+      - 工具腰带: addons/toolbelt.md
+      - 载具 addon: addons/vehicle.md
+      - 写自己的 addon: addons/writing.md
+
+  - 接入 API:
+      - 快速接入: api/index.md
+      - 刚体: api/bodies.md
+      - 坍塌与碎屑: api/collapse.md
+      - 事件: api/events.md
+      - 材质 · 效果 · 仿真: api/materials.md
+      - 力场: api/fields.md
+      - 载具 · 机关 · 角色: api/vehicles.md
+      - 完整示例: api/examples.md
+      # 指向语言选择落地页，它按浏览器语言自动跳 /javadoc/zh/ 或 /javadoc/en/。
+      # 不在这里写死语言：nav_translations 只能翻标题、翻不了链接，
+      # 而为了一条链接复制整棵 nav 不划算。
+      - API 文档 (Javadoc): https://gtedd.github.io/GTRigidPhysics/javadoc/
+
+  - 引擎原理:
+      - 引擎总览: engine/index.md
+      - 模块架构: engine/module-architecture.md
+      - XPBD 求解器: engine/xpbd.md
+      - 碰撞形状与合盒: engine/shape.md
+      - 接触生成: engine/contacts.md
+      - 约束系统: engine/constraints.md
+      - 质量与惯性张量: engine/mass.md
+      - 力系统: engine/forces.md
+      - 力记账: engine/force-ledger.md
+      - 地形: engine/terrain.md
+      - 线程与数据流: engine/threading.md
+      - 表现层发包: engine/view-packets.md
+      - 载具实现: engine/vehicle.md
+      - 虚拟角色: engine/character.md
+      - 布娃娃: engine/ragdoll.md
+      - 性能与上限: engine/limits.md
+
+  - 参与开发:
+      - 构建项目: dev/build.md
+      - 开发流程: dev/workflow.md
+      - 贡献指南: dev/contributing.md
+      - 翻译文档: dev/translating.md
+      - 导出 Markdown: dev/export.md
+      - 版本适配手册: dev/version-migration.md
+      - 发布流程: dev/release.md
+
+extra_css:
+  # 「导出 Markdown」工具条的样式。放 docs/assets/ 下随站点一起发布 ——
+  # 主题的 custom_dir（overrides/）不适合放它：那是模板目录，
+  # MkDocs 会把里面的非模板文件当静态资源原样拷贝，路径不受 extra_css 管辖。
+  - assets/stylesheets/md-export.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/GTedd/GTRigidPhysics
+      name: GitHub 仓库 / GitHub repository
+  generator: false
+  # overrides/partials/untranslated.html 用它拼「去翻译这一页」的 GitHub 链接。
+  # 换仓库归属时和 repo_url 一起改。
+  i18n_source_locale: zh

@@ -1,0 +1,23 @@
+# MkDocs 的构建产物。源文件是 docs/ 下的 markdown，site/ 每次现生成。
+# 线上的那份由上游仓库的 CI 构建后推到 gh-pages 分支。
+/site/
+
+# package.json 只用来给 bun 脚本起名字，dependencies 恒为空 —— 正常情况下
+# 这几样根本不该出现。但总有人会习惯性敲一遍 `bun install`，先挡住。
+node_modules/
+bun.lockb
+bun.lock
+
+# uv 走 `--with-requirements` 临时装配，不落 venv；这条只防手动建的那种。
+.venv/
+
+# mkdocs.yml 的 hooks 是普通 .py，跑一次就会在旁边留下字节码缓存
+__pycache__/
+*.pyc
+
+# IDE / 操作系统垃圾
+.idea/
+.vscode/
+desktop.ini
+Thumbs.db
+.DS_Store

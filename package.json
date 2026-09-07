@@ -1,0 +1,36 @@
+{
+  "$comment": [
+    "文档站与 i18n 工具链的统一入口。这个包**没有任何依赖** —— 不需要 npm install，",
+    "也不需要 bun install，clone 下来直接 `bun run docs` 即可。存在 package.json 的",
+    "唯一理由是给这些命令一个好记的名字，所以 dependencies 永远保持为空：",
+    "一旦引入依赖，就得管 lockfile、管审计、管版本漂移，而收益只是省几个字符。",
+    "",
+    "Python 侧（MkDocs）由 uv 按 requirements-docs.txt 临时装配，不落 venv 到仓库里。",
+    "没装 uv 的退路见 docs/dev/translating.md。"
+  ],
+  "name": "gtrigidphysics-docs",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "bun": ">=1.2.0"
+  },
+  "scripts": {
+    "docs": "uv run --with-requirements requirements-docs.txt mkdocs serve",
+    "docs:build": "uv run --with-requirements requirements-docs.txt mkdocs build --strict",
+    "docs:zh": "uv run --with-requirements requirements-docs.txt mkdocs serve",
+    "docs:en": "uv run --with-requirements requirements-docs.txt mkdocs serve --open http://127.0.0.1:8000/en/",
+
+    "i18n:status": "bun tools/i18n/docs.ts status",
+    "i18n:check": "bun tools/i18n/docs.ts check",
+    "i18n:new": "bun tools/i18n/docs.ts new",
+    "i18n:bless": "bun tools/i18n/docs.ts bless",
+
+    "javadoc:status": "bun tools/i18n/javadoc.ts status",
+    "javadoc:check": "bun tools/i18n/javadoc.ts check",
+    "i18n:new-javadoc": "bun tools/i18n/javadoc.ts new",
+    "javadoc:build": "./gradlew aggregateJavadoc",
+
+    "check": "bun run i18n:check && bun run javadoc:check && bun run docs:build"
+  }
+}

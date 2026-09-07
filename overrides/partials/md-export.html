@@ -1,0 +1,37 @@
+{#
+  「导出 Markdown」工具条 —— 正文右上角一行小字，两个链接。
+
+  为什么不去覆盖主题自带的 partials/actions.html（那里是铅笔按钮所在的位置，
+  视觉上更合适）：那个 partial 没有可继承的 block，覆盖等于把 mkdocs-material
+  当前版本的实现整段抄进仓库，主题一升级就得手工对齐。这条工具条只依赖
+  hooks/md_export.py 挂在 page.meta 上的两个键，主题怎么变都不受影响。
+
+  链接是相对路径，由 hook 用 posixpath.relpath 算好 —— 见那边的注释，
+  首页与语言根页的层级和普通页差一级，在 Jinja 里手算会错。
+#}
+{% if page and page.meta and page.meta.md_export_page %}
+
+  {% set STRINGS = {
+    "zh": {
+      "page": "下载本页 Markdown",
+      "zip":  "导出全部（.zip）",
+      "hint": "Markdown 原文，供翻译与 AI 阅读"
+    },
+    "en": {
+      "page": "Download this page as Markdown",
+      "zip":  "Export all pages (.zip)",
+      "hint": "Markdown sources, for translators and AI agents"
+    }
+  } %}
+  {% set t = STRINGS.get(config.theme.language | string, STRINGS["en"]) %}
+
+  <div class="gtrp-md-export" title="{{ t.hint }}">
+    <a href="{{ page.meta.md_export_page }}" download>
+      {% include ".icons/material/language-markdown-outline.svg" %}{{ t.page }}
+    </a>
+    <a href="{{ page.meta.md_export_zip }}" download>
+      {% include ".icons/material/folder-download-outline.svg" %}{{ t.zip }}
+    </a>
+  </div>
+
+{% endif %}

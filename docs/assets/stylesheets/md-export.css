@@ -1,0 +1,45 @@
+/*
+ * 「导出 Markdown」工具条的样式。
+ *
+ * 目标是**不抢戏**：它对多数读者没用，只有译者和拿文档喂模型的人会点。
+ * 所以做成正文右上角一行淡色小字 —— 找的时候在，不找的时候不碍事。
+ * 用主题变量而不是写死颜色，深浅色模式各自跟着走。
+ */
+
+.gtrp-md-export {
+  display: flex;
+  gap: 1.2em;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin: 0 0 -0.4rem;
+  font-size: 0.62rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.gtrp-md-export a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  color: var(--md-default-fg-color--light);
+  text-decoration: none;
+}
+
+.gtrp-md-export a:hover,
+.gtrp-md-export a:focus {
+  color: var(--md-accent-fg-color);
+}
+
+/* 图标由 partial 里的 {% include ".icons/..." %} 内联成 <svg>，
+   没有固有尺寸，必须在这里给 —— 不给的话会撑成默认的 100% 宽。 */
+.gtrp-md-export svg {
+  width: 1.1em;
+  height: 1.1em;
+  fill: currentcolor;
+}
+
+/* 窄屏上这一行会和标题挤在一起，靠左排反而更好读 */
+@media screen and (max-width: 44.9844em) {
+  .gtrp-md-export {
+    justify-content: flex-start;
+  }
+}

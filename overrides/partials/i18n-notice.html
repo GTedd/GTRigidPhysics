@@ -1,0 +1,75 @@
+{#
+  译文状态横幅。两种情况，互斥：
+
+  ① 未翻译 —— 当前语言不是源语言，且本页用的是**没有语言后缀**的源文件，
+     也就是 mkdocs-static-i18n 的 fallback_to_default 生效了。
+     判定看 page.file.localization：
+       docs/guide/quick-start.md      → 为空  → 是回退
+       docs/guide/quick-start.en.md   → 'en'  → 真译本
+
+  ② 已过期 —— 有译本，但原文在那之后改过。
+     由 hooks/i18n_freshness.py 比对 front matter 里的
+     i18n_source_sha 与当前原文指纹得出，结论放在 page.meta.i18n_outdated。
+
+  两种情况都同时是**贡献入口**：点一下就落到 GitHub 编辑器，路径已经填好。
+  文案按语言查表；没补文案的语言退回英文，横幅照常显示，不会静默消失。
+#}
+{% set source_locale = config.extra.i18n_source_locale | default("zh") %}
+{% set current_locale = config.theme.language | string %}
+
+{% if page and page.file and current_locale != source_locale %}
+
+  {% set STRINGS = {
+    "en": {
+      "missing_title": "This page has not been translated yet",
+      "missing_body":  "You are reading the Simplified Chinese original. Translations are contributed by the community — this page is up for grabs.",
+      "missing_cta":   "Translate this page",
+      "stale_title":   "This translation may be out of date",
+      "stale_body":    "The Chinese original has changed since this page was translated. Where the two disagree, the original is authoritative.",
+      "stale_cta":     "Update this translation",
+      "stale_diff":    "What changed in the original",
+      "guide":         "How to translate"
+    }
+  } %}
+  {% set t = STRINGS.get(current_locale, STRINGS["en"]) %}
+
+  {# base_url 指向**站点根**（不是当前语言根）—— 各语言只是 dest_path 上多一层
+     前缀，所以去本语言的翻译指南要自己把 locale 补回去。 #}
+  {% set guide_url = base_url ~ "/" ~ current_locale ~ "/dev/translating/" %}
+
+  {% if not page.file.localization %}
+
+    {% set target_path = "docs/" ~ page.file.src_uri[:-3] ~ "." ~ current_locale ~ ".md" %}
+    <div class="admonition warning">
+      <p class="admonition-title">{{ t.missing_title }}</p>
+      <p>{{ t.missing_body }}</p>
+      <p>
+        <a href="{{ config.repo_url }}/new/main?filename={{ target_path }}"
+           rel="nofollow noopener">{{ t.missing_cta }} &rarr;</a>
+        &nbsp;·&nbsp;
+        <a href="{{ guide_url }}">{{ t.guide }}</a>
+        &nbsp;·&nbsp;
+        <code>{{ target_path }}</code>
+      </p>
+    </div>
+
+  {% elif page.meta.i18n_outdated %}
+
+    {% set source_path = "docs/" ~ page.meta.i18n_source_path %}
+    <div class="admonition warning">
+      <p class="admonition-title">{{ t.stale_title }}</p>
+      <p>{{ t.stale_body }}</p>
+      <p>
+        <a href="{{ config.repo_url }}/edit/main/docs/{{ page.file.src_uri }}"
+           rel="nofollow noopener">{{ t.stale_cta }} &rarr;</a>
+        &nbsp;·&nbsp;
+        <a href="{{ config.repo_url }}/commits/main/{{ source_path }}"
+           rel="nofollow noopener">{{ t.stale_diff }}</a>
+        &nbsp;·&nbsp;
+        <a href="{{ guide_url }}">{{ t.guide }}</a>
+      </p>
+    </div>
+
+  {% endif %}
+
+{% endif %}
