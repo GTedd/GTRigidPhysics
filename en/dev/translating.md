@@ -1,5 +1,5 @@
 ---
-i18n_source_sha: aeeffe73cb81
+i18n_source_sha: 4b51c27e6860
 ---
 
 # Translating the Docs
@@ -290,10 +290,10 @@ the public repository, so the check cannot run.
 
 !!! warning "For maintainers: port it back immediately after merging"
 
-    The public repository's `docs/` is **overwritten one-way** by CI in the source
-    repository. A PR merged in the public repository must be carried back to the
-    source repository promptly, or the next sync will wipe it out. Merge it, move it.
-    Don't let them pile up.
+    The public repository's `docs/` is a **one-way overwritten** copy of the one in
+    the source repository. A PR merged in the public repository must be carried back
+    to the source repository promptly, or the next sync will wipe it out.
+    Merge it, move it. Don't let them pile up.
 
 ### Commit messages
 
