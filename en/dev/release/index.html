@@ -3033,6 +3033,17 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
+        先弄清楚：这个项目有两个仓库
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
         一次性准备
       
     </span>
@@ -3042,10 +3053,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-github" class="md-nav__link">
+  <a href="#1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. 建 GitHub 仓库并推代码
+        1. 建两个仓库并推代码
       
     </span>
   </a>
@@ -3056,7 +3067,7 @@
   <a href="#2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. 跑一次发布工作流
+        2. 配好跨仓库推送的令牌
       
     </span>
   </a>
@@ -3080,7 +3091,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         日常发布
@@ -3091,7 +3102,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         文档站单独发布
@@ -3119,7 +3130,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         版本号规则
@@ -3130,7 +3141,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
       
         发布了什么，没发布什么
@@ -3152,7 +3163,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
       
         故障排查
@@ -3219,6 +3230,17 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
+        先弄清楚：这个项目有两个仓库
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
         一次性准备
       
     </span>
@@ -3228,10 +3250,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-github" class="md-nav__link">
+  <a href="#1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. 建 GitHub 仓库并推代码
+        1. 建两个仓库并推代码
       
     </span>
   </a>
@@ -3242,7 +3264,7 @@
   <a href="#2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. 跑一次发布工作流
+        2. 配好跨仓库推送的令牌
       
     </span>
   </a>
@@ -3266,7 +3288,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         日常发布
@@ -3277,7 +3299,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         文档站单独发布
@@ -3305,7 +3327,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         版本号规则
@@ -3316,7 +3338,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
       
         发布了什么，没发布什么
@@ -3338,7 +3360,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
       
         故障排查
@@ -3435,13 +3457,78 @@
 <h1 id="_1">发布流程<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
 <p>本文写给维护者。日常发布只需要打一个 tag，其余全自动。</p>
 <hr />
-<h2 id="_2">一次性准备<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
-<p>以下三步只在<strong>第一次发布前</strong>做一次。</p>
-<h3 id="1-github">1. 建 GitHub 仓库并推代码<a class="headerlink" href="#1-github" title="Permanent link">🔗</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>https://github.com/GTedd/GTRigidPhysics.git
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>main
+<h2 id="_2">先弄清楚：这个项目有两个仓库<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
+<p>源码仓库是<strong>私有</strong>的，而文档站要给所有人看 —— 私有仓库发不了免费的 GitHub Pages。
+所以对外的一切都落在另一个<strong>公开</strong>仓库上：</p>
+<table>
+<thead>
+<tr>
+<th>仓库</th>
+<th>可见性</th>
+<th>放什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HappyWithMin/GTRigidPhysics</code></td>
+<td>私有</td>
+<td>源码、CI、<code>docs/</code> 的<strong>真相源</strong></td>
+</tr>
+<tr>
+<td><code>GTedd/GTRigidPhysics</code></td>
+<td>公开</td>
+<td><code>main</code> = 文档源码副本<br><code>gh-pages</code> = 文档站 + Javadoc + Maven 构件</td>
+</tr>
+</tbody>
+</table>
+<p>发布出去的东西全在公开仓库那一侧：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>https://gtedd.github.io/GTRigidPhysics/           文档站
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>https://gtedd.github.io/GTRigidPhysics/javadoc/   API 文档
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>https://gtedd.github.io/GTRigidPhysics/           Maven 仓库（同一个地址）
 </code></pre></div>
-<p>若用户名或仓库名不是 <code>GTedd</code> / <code>GTRigidPhysics</code>，有<strong>四处</strong>要同步改：</p>
+<p>CI 从私有仓库单向推向公开仓库。三条工作流各管一摊，共用 <code>gh-pages</code> 并发组排队：</p>
+<table>
+<thead>
+<tr>
+<th>工作流</th>
+<th>触发</th>
+<th>往公开仓库写什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docs.yml</code></td>
+<td>改了 <code>docs/**</code> 等</td>
+<td>站点根路径 + 同步 <code>docs/</code> 到 <code>main</code></td>
+</tr>
+<tr>
+<td><code>javadoc.yml</code></td>
+<td>改了 <code>*/src/main/java/**</code> 或译文覆盖层</td>
+<td><code>javadoc/</code></td>
+</tr>
+<tr>
+<td><code>release.yml</code></td>
+<td>打了 <code>v*</code> tag</td>
+<td>三者一起，外加 Maven 构件 <code>cn/</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">文档源码是单向覆盖的</p>
+<p>公开仓库上合并的翻译 PR <strong>必须先回流到私有仓库</strong>，否则下一次
+<code>docs.yml</code> 跑起来会把它抹掉。合了就立刻带回来，别攒着。</p>
+</div>
+<hr />
+<h2 id="_3">一次性准备<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
+<p>以下几步只在<strong>第一次发布前</strong>做一次。</p>
+<h3 id="1">1. 建两个仓库并推代码<a class="headerlink" href="#1" title="Permanent link">🔗</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 私有仓库：源码</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>https://github.com/HappyWithMin/GTRigidPhysics.git
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>main
+</code></pre></div>
+<p>公开仓库的 <code>main</code>（文档源码）与 <code>gh-pages</code>（构建产物）由 <code>docs.yml</code> 与
+<code>javadoc.yml</code> 自动维护，首次也可以手动推一份上去把站点先立起来。</p>
+<p>若归属或仓库名有变，有<strong>五处</strong>要同步改：</p>
 <table>
 <thead>
 <tr>
@@ -3452,42 +3539,51 @@
 <tbody>
 <tr>
 <td><code>gradle.properties</code> 的 <code>githubOwner</code> / <code>githubRepo</code></td>
-<td>POM 的 url/scm、Javadoc 底栏</td>
+<td>POM 的 url/scm、发布落地页</td>
+</tr>
+<tr>
+<td><code>gradle.properties</code> 的 <code>copyrightHolder</code></td>
+<td>Javadoc 底栏、POM 的 developer。<strong>与仓库归属刻意分开</strong>，改它要同步改 <code>LICENSE-MIT</code></td>
+</tr>
+<tr>
+<td>三条工作流顶部的 <code>env.PUBLIC_REPO</code></td>
+<td>CI 往哪个仓库推</td>
 </tr>
 <tr>
 <td><code>mkdocs.yml</code> 的 <code>site_url</code> / <code>repo_url</code> / <code>nav</code> 里的 Javadoc 外链</td>
 <td>文档站</td>
 </tr>
 <tr>
-<td><code>docs/index.md</code> 里的仓库与 Javadoc 链接</td>
-<td>文档站首页</td>
-</tr>
-<tr>
-<td><code>README.md</code> 顶部的两个站点链接</td>
-<td>仓库主页</td>
+<td><code>docs/index.md</code>、<code>README.md</code> 里的站点链接</td>
+<td>首页与仓库主页</td>
 </tr>
 </tbody>
 </table>
-<p>前者是构建脚本读的变量，后三者是 markdown 里的字面量 —— 没有统一的注入机制，
-只能手改。改完跑一次 <code>mkdocs build --strict</code>，死链会被当场拦下。</p>
-<h3 id="2">2. 跑一次发布工作流<a class="headerlink" href="#2" title="Permanent link">🔗</a></h3>
-<p><code>gh-pages</code> 分支由 <code>release.yml</code> 首次运行时自动创建（用的是 <code>git worktree add --orphan</code>）。
-<strong>先发一个版本，再去开 Pages</strong> —— 反过来的话 Pages 设置里根本看不到那个分支。</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>tag<span class="w"> </span>v1.0.0
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1.0.0
-</code></pre></div>
+<p>第一二项是构建脚本读的变量，其余是字面量 —— 没有统一的注入机制，只能手改。
+改完跑一次 <code>mkdocs build --strict</code>，死链会被当场拦下。</p>
+<h3 id="2">2. 配好跨仓库推送的令牌<a class="headerlink" href="#2" title="Permanent link">🔗</a></h3>
+<p>CI 要从私有仓库往公开仓库推，而 <code>GITHUB_TOKEN</code> 只对<strong>当前</strong>仓库有权限。
+所以需要一个 PAT：</p>
+<ol>
+<li>建一个 fine-grained token，仓库范围选 <code>GTedd/GTRigidPhysics</code>，
+   权限给 <strong>Contents: Read and write</strong></li>
+<li>存进私有仓库的 <strong>Settings → Secrets and variables → Actions</strong>，
+   名字必须是 <code>PAGES_TOKEN</code></li>
+</ol>
+<p>三条工作流都会在推送前检查它在不在，缺了会直接报错退出 —— 而不是跑到一半
+在 <code>git push</code> 那步抛一个看不懂的 403。</p>
 <h3 id="3-github-pages">3. 开启 GitHub Pages<a class="headerlink" href="#3-github-pages" title="Permanent link">🔗</a></h3>
-<p>仓库 <strong>Settings → Pages</strong>：</p>
+<p>在<strong>公开</strong>仓库 <code>GTedd/GTRigidPhysics</code> 的 <strong>Settings → Pages</strong>：</p>
 <ul>
 <li>Source: <strong>Deploy from a branch</strong></li>
 <li>Branch: <strong>gh-pages</strong> / <strong>/ (root)</strong></li>
 </ul>
-<p>等一两分钟，访问 <code>https://&lt;用户名&gt;.github.io/&lt;仓库名&gt;/</code> 应该能看到落地页。</p>
+<p>等一两分钟，访问 <a href="https://gtedd.github.io/GTRigidPhysics/">https://gtedd.github.io/GTRigidPhysics/</a> 应该能看到首页。</p>
 <blockquote>
-<p>私有仓库的 GitHub Pages 需要付费方案。开源项目请把仓库设为 public。</p>
+<p>私有仓库的 GitHub Pages 需要付费方案 —— 这正是要分出一个公开仓库的原因。</p>
 </blockquote>
 <hr />
-<h2 id="_3">日常发布<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
+<h2 id="_4">日常发布<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 1. 改版本号</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">#    gradle.properties 里的 version 只是本地默认值，</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">#    CI 用的是 tag，两者保持一致以免混淆</span>
@@ -3514,7 +3610,7 @@
 </ol>
 <p>也可以在 Actions 页面手动触发 <code>发布</code> 工作流并填版本号，适合补发。</p>
 <hr />
-<h2 id="_4">文档站单独发布<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
+<h2 id="_5">文档站单独发布<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
 <p><strong>改文档不需要发版。</strong> <code>docs/**</code> 或 <code>mkdocs.yml</code> 一有改动推到 <code>main</code>，
 <code>docs.yml</code> 工作流就会重新构建并发布文档站 —— 改个错别字不该需要打一个 tag。</p>
 <p>PR 阶段只验证能不能构建、不发布，否则任何人提 PR 都能改线上文档。</p>
@@ -3530,6 +3626,7 @@
 <code>mkdocs-material</code> 的 search 插件检测到 jieba 已安装会自动启用中文分词。</p>
 </div>
 <h3 id="gh-pages">gh-pages 上的内容<a class="headerlink" href="#gh-pages" title="Permanent link">🔗</a></h3>
+<p>这个分支在<strong>公开</strong>仓库 <code>GTedd/GTRigidPhysics</code> 上，由私有仓库的三条工作流跨仓库推送。</p>
 <table>
 <thead>
 <tr>
@@ -3553,16 +3650,22 @@
 <td>同上</td>
 </tr>
 <tr>
+<td><code>/llms.txt</code>、<code>/llms-full.txt</code>、<code>/export/</code></td>
+<td>Markdown 导出（译者与 agent 用）</td>
+<td>随站点一起</td>
+<td>同上</td>
+</tr>
+<tr>
 <td><code>/javadoc/</code></td>
 <td>语言选择落地页</td>
 <td>整体替换</td>
-<td><code>release.yml</code></td>
+<td><code>javadoc.yml</code> 与 <code>release.yml</code></td>
 </tr>
 <tr>
 <td><code>/javadoc/zh/</code>、<code>/javadoc/en/</code></td>
 <td>各语言 API 文档（面向开发者）</td>
 <td>整体替换</td>
-<td><code>release.yml</code></td>
+<td>同上</td>
 </tr>
 <tr>
 <td><code>/cn/gtedd/...</code></td>
@@ -3575,9 +3678,9 @@
 <p>最后一条是硬约束：别人的项目正锁着旧版本，删掉就是把他们的构建打断。
 发布脚本用 <code>find ... ! -name cn ! -name javadoc -exec rm -rf</code> 逐项清理而不是
 <code>rm -rf</code> 整个目录，就是为了守住这两个目录 —— 改这段脚本时务必保持这个语义。</p>
-<p><code>docs.yml</code> 与 <code>release.yml</code> 共用 <code>concurrency: gh-pages</code>，两者不会并发推送。</p>
+<p><code>docs.yml</code>、<code>javadoc.yml</code> 与 <code>release.yml</code> 共用 <code>concurrency: gh-pages</code>，三者不会并发推送。</p>
 <hr />
-<h2 id="_5">版本号规则<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
+<h2 id="_6">版本号规则<a class="headerlink" href="#_6" title="Permanent link">🔗</a></h2>
 <p>遵循<a href="https://semver.org/lang/zh-CN/">语义化版本</a>，tag 格式 <code>v主.次.修</code>（可带预发布后缀）。</p>
 <p>工作流会校验格式，不合规直接失败 —— <strong>版本号一旦发布就永久留在 Maven 仓库里</strong>，
 校验在这里比事后清理便宜得多。</p>
@@ -3606,7 +3709,7 @@
 <p>api 模块动了签名时，记得同步改 <code>RigidPhysicsApiImpl.API_VERSION</code>
 —— 它是下游做能力判断的依据，与插件版本各自演进。</p>
 <hr />
-<h2 id="_6">发布了什么，没发布什么<a class="headerlink" href="#_6" title="Permanent link">🔗</a></h2>
+<h2 id="_7">发布了什么，没发布什么<a class="headerlink" href="#_7" title="Permanent link">🔗</a></h2>
 <table>
 <thead>
 <tr>
@@ -3645,10 +3748,10 @@
 </table>
 <p>插件本体刻意不进 Maven 仓库，两个理由任一个都足够：它是可执行插件本体，依赖服务器上
 已安装的 packetevents 前置插件，无法脱离运行环境独立使用；且含三平台 native、体积数十 MB。
-详见 <a href="https://github.com/GTedd/GTRigidPhysics/blob/main/THIRD_PARTY_NOTICES.md">THIRD_PARTY_NOTICES.md</a>。</p>
+详见源码仓库根目录的 <code>THIRD_PARTY_NOTICES.md</code>。</p>
 <hr />
 <h2 id="ci">CI 为什么要「剥离本机专属构建配置」<a class="headerlink" href="#ci" title="Permanent link">🔗</a></h2>
-<p>两个 workflow 里都有这一步：</p>
+<p>凡是要跑 Gradle 的 workflow（<code>build.yml</code>、<code>javadoc.yml</code>、<code>release.yml</code>）里都有这一步：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'/^org\.gradle\.java\.home=/d'</span><span class="w"> </span>gradle.properties
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'/^javaHome=/d'</span><span class="w"> </span>gradle/wrapper/gradle-wrapper.properties
 </code></pre></div>
@@ -3665,7 +3768,7 @@ wrapper 的 <code>distributionUrl</code> 指向阿里云镜像（开发机直连
 不同版本上 —— 而这类不一致往往要到某个版本行为差异暴露时才被发现。</p>
 </blockquote>
 <hr />
-<h2 id="_7">故障排查<a class="headerlink" href="#_7" title="Permanent link">🔗</a></h2>
+<h2 id="_8">故障排查<a class="headerlink" href="#_8" title="Permanent link">🔗</a></h2>
 <table>
 <thead>
 <tr>

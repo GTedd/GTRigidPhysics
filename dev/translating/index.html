@@ -3133,6 +3133,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="提交">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PR 提到哪个仓库
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        commit 信息
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -3446,6 +3474,34 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="提交">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PR 提到哪个仓库
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        commit 信息
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3820,6 +3876,39 @@ packetevents、Gradle、以及一切配置键名（<code>camera-roll.yml</code>�
 </div>
 <hr />
 <h2 id="_16">提交<a class="headerlink" href="#_16" title="Permanent link">🔗</a></h2>
+<h3 id="pr">PR 提到哪个仓库<a class="headerlink" href="#pr" title="Permanent link">🔗</a></h3>
+<p>文档站的源码有两份：</p>
+<table>
+<thead>
+<tr>
+<th>仓库</th>
+<th>谁能进</th>
+<th>是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/GTedd/GTRigidPhysics"><code>GTedd/GTRigidPhysics</code></a></td>
+<td>所有人</td>
+<td>公开的文档仓库。站上每页的铅笔指向它</td>
+</tr>
+<tr>
+<td>插件源码仓库</td>
+<td>团队成员</td>
+<td><code>docs/</code> 的真相源，也是 Javadoc 译文覆盖层所在</td>
+</tr>
+</tbody>
+</table>
+<p><strong>文档站的翻译提到公开那个。</strong> 它就是铅笔按钮落地的地方，不需要任何权限。</p>
+<p><strong>Javadoc 的翻译只能在源码仓库做</strong> —— 覆盖层要跟 <code>.java</code> 原文逐字比对，
+公开仓库里没有那些源文件，校验跑不起来。</p>
+<div class="admonition warning">
+<p class="admonition-title">给维护者：合并之后要立刻回流</p>
+<p>公开仓库的 <code>docs/</code> 由源码仓库的 CI <strong>单向覆盖</strong>同步。
+在公开仓库合掉的 PR，必须尽快把同样的改动带回源码仓库，
+否则下一次同步会把它抹掉。合了就搬，别攒着。</p>
+</div>
+<h3 id="commit">commit 信息<a class="headerlink" href="#commit" title="Permanent link">🔗</a></h3>
 <p>分支与提交信息的规范见<a href="../contributing/">贡献指南</a>。翻译类改动的 commit 前缀统一用
 <code>docs</code>，并在括号里标语言：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>docs(i18n/en): 翻译快速开始与命令参考

@@ -3133,6 +3133,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Submitting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#which-repository-to-open-the-pr-against" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which repository to open the PR against
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commit-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commit messages
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -3447,6 +3475,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Submitting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#which-repository-to-open-the-pr-against" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which repository to open the PR against
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commit-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commit messages
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -3489,23 +3545,6 @@
 
   
   
-
-  
-
-    
-    <div class="admonition warning">
-      <p class="admonition-title">This translation may be out of date</p>
-      <p>The Chinese original has changed since this page was translated. Where the two disagree, the original is authoritative.</p>
-      <p>
-        <a href="https://github.com/GTedd/GTRigidPhysics/edit/main/docs/dev/translating.en.md"
-           rel="nofollow noopener">Update this translation &rarr;</a>
-        &nbsp;·&nbsp;
-        <a href="https://github.com/GTedd/GTRigidPhysics/commits/main/docs/dev/translating.md"
-           rel="nofollow noopener">What changed in the original</a>
-        &nbsp;·&nbsp;
-        <a href="../../../en/dev/translating/">How to translate</a>
-      </p>
-    </div>
 
   
 
@@ -3859,6 +3898,42 @@ plugin's runtime language files (<code>zh_CN.yml</code> / <code>en_US.yml</code>
 </div>
 <hr />
 <h2 id="submitting">Submitting<a class="headerlink" href="#submitting" title="Permanent link">🔗</a></h2>
+<h3 id="which-repository-to-open-the-pr-against">Which repository to open the PR against<a class="headerlink" href="#which-repository-to-open-the-pr-against" title="Permanent link">🔗</a></h3>
+<p>There are two copies of the documentation source:</p>
+<table>
+<thead>
+<tr>
+<th>Repository</th>
+<th>Who can get in</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/GTedd/GTRigidPhysics"><code>GTedd/GTRigidPhysics</code></a></td>
+<td>Everyone</td>
+<td>The public docs repository. The pencil on every page points here</td>
+</tr>
+<tr>
+<td>The plugin source repository</td>
+<td>Team members</td>
+<td>The source of truth for <code>docs/</code>, and where the Javadoc overlay lives</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Documentation translations go to the public one.</strong> That is where the pencil button
+lands, and it needs no special access.</p>
+<p><strong>Javadoc translations can only be done in the source repository</strong> — the overlay is
+compared byte for byte against the <code>.java</code> original, and those source files aren't in
+the public repository, so the check cannot run.</p>
+<div class="admonition warning">
+<p class="admonition-title">For maintainers: port it back immediately after merging</p>
+<p>The public repository's <code>docs/</code> is <strong>overwritten one-way</strong> by CI in the source
+repository. A PR merged in the public repository must be carried back to the
+source repository promptly, or the next sync will wipe it out. Merge it, move it.
+Don't let them pile up.</p>
+</div>
+<h3 id="commit-messages">Commit messages<a class="headerlink" href="#commit-messages" title="Permanent link">🔗</a></h3>
 <p>Branch and commit conventions are in the <a href="../contributing/">Contributing guide</a>.
 Translation commits use the <code>docs</code> prefix with the language in parentheses:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>docs(i18n/en): translate quick start and command reference

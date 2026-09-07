@@ -11372,6 +11372,31 @@ English — but that isn't very friendly to readers of that language.
 
 ## Submitting
 
+### Which repository to open the PR against
+
+There are two copies of the documentation source:
+
+| Repository | Who can get in | What it is |
+|---|---|---|
+| [`GTedd/GTRigidPhysics`](https://github.com/GTedd/GTRigidPhysics) | Everyone | The public docs repository. The pencil on every page points here |
+| The plugin source repository | Team members | The source of truth for `docs/`, and where the Javadoc overlay lives |
+
+**Documentation translations go to the public one.** That is where the pencil button
+lands, and it needs no special access.
+
+**Javadoc translations can only be done in the source repository** — the overlay is
+compared byte for byte against the `.java` original, and those source files aren't in
+the public repository, so the check cannot run.
+
+!!! warning "For maintainers: port it back immediately after merging"
+
+    The public repository's `docs/` is **overwritten one-way** by CI in the source
+    repository. A PR merged in the public repository must be carried back to the
+    source repository promptly, or the next sync will wipe it out. Merge it, move it.
+    Don't let them pile up.
+
+### Commit messages
+
 Branch and commit conventions are in the [Contributing guide](contributing.md).
 Translation commits use the `docs` prefix with the language in parentheses:
 
@@ -11886,49 +11911,90 @@ MC 出新正式版时，逐项勾。**没勾完不合 main。**
 
 ---
 
+## 先弄清楚：这个项目有两个仓库
+
+源码仓库是**私有**的，而文档站要给所有人看 —— 私有仓库发不了免费的 GitHub Pages。
+所以对外的一切都落在另一个**公开**仓库上：
+
+| 仓库 | 可见性 | 放什么 |
+|---|---|---|
+| `HappyWithMin/GTRigidPhysics` | 私有 | 源码、CI、`docs/` 的**真相源** |
+| `GTedd/GTRigidPhysics` | 公开 | `main` = 文档源码副本<br>`gh-pages` = 文档站 + Javadoc + Maven 构件 |
+
+发布出去的东西全在公开仓库那一侧：
+
+```
+https://gtedd.github.io/GTRigidPhysics/           文档站
+https://gtedd.github.io/GTRigidPhysics/javadoc/   API 文档
+https://gtedd.github.io/GTRigidPhysics/           Maven 仓库（同一个地址）
+```
+
+CI 从私有仓库单向推向公开仓库。三条工作流各管一摊，共用 `gh-pages` 并发组排队：
+
+| 工作流 | 触发 | 往公开仓库写什么 |
+|---|---|---|
+| `docs.yml` | 改了 `docs/**` 等 | 站点根路径 + 同步 `docs/` 到 `main` |
+| `javadoc.yml` | 改了 `*/src/main/java/**` 或译文覆盖层 | `javadoc/` |
+| `release.yml` | 打了 `v*` tag | 三者一起，外加 Maven 构件 `cn/` |
+
+!!! warning "文档源码是单向覆盖的"
+
+    公开仓库上合并的翻译 PR **必须先回流到私有仓库**，否则下一次
+    `docs.yml` 跑起来会把它抹掉。合了就立刻带回来，别攒着。
+
+---
+
 ## 一次性准备
 
-以下三步只在**第一次发布前**做一次。
+以下几步只在**第一次发布前**做一次。
 
-### 1. 建 GitHub 仓库并推代码
+### 1. 建两个仓库并推代码
 
 ```bash
-git remote add origin https://github.com/GTedd/GTRigidPhysics.git
+# 私有仓库：源码
+git remote add origin https://github.com/HappyWithMin/GTRigidPhysics.git
 git push -u origin main
 ```
 
-若用户名或仓库名不是 `GTedd` / `GTRigidPhysics`，有**四处**要同步改：
+公开仓库的 `main`（文档源码）与 `gh-pages`（构建产物）由 `docs.yml` 与
+`javadoc.yml` 自动维护，首次也可以手动推一份上去把站点先立起来。
+
+若归属或仓库名有变，有**五处**要同步改：
 
 | 位置 | 影响 |
 |---|---|
-| `gradle.properties` 的 `githubOwner` / `githubRepo` | POM 的 url/scm、Javadoc 底栏 |
+| `gradle.properties` 的 `githubOwner` / `githubRepo` | POM 的 url/scm、发布落地页 |
+| `gradle.properties` 的 `copyrightHolder` | Javadoc 底栏、POM 的 developer。**与仓库归属刻意分开**，改它要同步改 `LICENSE-MIT` |
+| 三条工作流顶部的 `env.PUBLIC_REPO` | CI 往哪个仓库推 |
 | `mkdocs.yml` 的 `site_url` / `repo_url` / `nav` 里的 Javadoc 外链 | 文档站 |
-| `docs/index.md` 里的仓库与 Javadoc 链接 | 文档站首页 |
-| `README.md` 顶部的两个站点链接 | 仓库主页 |
+| `docs/index.md`、`README.md` 里的站点链接 | 首页与仓库主页 |
 
-前者是构建脚本读的变量，后三者是 markdown 里的字面量 —— 没有统一的注入机制，
-只能手改。改完跑一次 `mkdocs build --strict`，死链会被当场拦下。
+第一二项是构建脚本读的变量，其余是字面量 —— 没有统一的注入机制，只能手改。
+改完跑一次 `mkdocs build --strict`，死链会被当场拦下。
 
-### 2. 跑一次发布工作流
+### 2. 配好跨仓库推送的令牌
 
-`gh-pages` 分支由 `release.yml` 首次运行时自动创建（用的是 `git worktree add --orphan`）。
-**先发一个版本，再去开 Pages** —— 反过来的话 Pages 设置里根本看不到那个分支。
+CI 要从私有仓库往公开仓库推，而 `GITHUB_TOKEN` 只对**当前**仓库有权限。
+所以需要一个 PAT：
 
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
+1. 建一个 fine-grained token，仓库范围选 `GTedd/GTRigidPhysics`，
+   权限给 **Contents: Read and write**
+2. 存进私有仓库的 **Settings → Secrets and variables → Actions**，
+   名字必须是 `PAGES_TOKEN`
+
+三条工作流都会在推送前检查它在不在，缺了会直接报错退出 —— 而不是跑到一半
+在 `git push` 那步抛一个看不懂的 403。
 
 ### 3. 开启 GitHub Pages
 
-仓库 **Settings → Pages**：
+在**公开**仓库 `GTedd/GTRigidPhysics` 的 **Settings → Pages**：
 
 - Source: **Deploy from a branch**
 - Branch: **gh-pages** / **/ (root)**
 
-等一两分钟，访问 `https://<用户名>.github.io/<仓库名>/` 应该能看到落地页。
+等一两分钟，访问 <https://gtedd.github.io/GTRigidPhysics/> 应该能看到首页。
 
-> 私有仓库的 GitHub Pages 需要付费方案。开源项目请把仓库设为 public。
+> 私有仓库的 GitHub Pages 需要付费方案 —— 这正是要分出一个公开仓库的原因。
 
 ---
 
@@ -11987,19 +12053,22 @@ mkdocs build --strict   # 死链会让构建失败
 
 ### gh-pages 上的内容
 
+这个分支在**公开**仓库 `GTedd/GTRigidPhysics` 上，由私有仓库的三条工作流跨仓库推送。
+
 | 路径 | 内容 | 更新策略 | 由谁维护 |
 |---|---|---|---|
 | `/` | 文档站中文版（面向用户） | 整体替换 | `docs.yml` 与 `release.yml` |
 | `/en/`、`/<lang>/` | 文档站各语言译本 | 整体替换 | 同上 |
-| `/javadoc/` | 语言选择落地页 | 整体替换 | `release.yml` |
-| `/javadoc/zh/`、`/javadoc/en/` | 各语言 API 文档（面向开发者） | 整体替换 | `release.yml` |
+| `/llms.txt`、`/llms-full.txt`、`/export/` | Markdown 导出（译者与 agent 用） | 随站点一起 | 同上 |
+| `/javadoc/` | 语言选择落地页 | 整体替换 | `javadoc.yml` 与 `release.yml` |
+| `/javadoc/zh/`、`/javadoc/en/` | 各语言 API 文档（面向开发者） | 整体替换 | 同上 |
 | `/cn/gtedd/...` | Maven 构件 | **只增不删** | `release.yml` |
 
 最后一条是硬约束：别人的项目正锁着旧版本，删掉就是把他们的构建打断。
 发布脚本用 `find ... ! -name cn ! -name javadoc -exec rm -rf` 逐项清理而不是
 `rm -rf` 整个目录，就是为了守住这两个目录 —— 改这段脚本时务必保持这个语义。
 
-`docs.yml` 与 `release.yml` 共用 `concurrency: gh-pages`，两者不会并发推送。
+`docs.yml`、`javadoc.yml` 与 `release.yml` 共用 `concurrency: gh-pages`，三者不会并发推送。
 
 ---
 
@@ -12033,13 +12102,13 @@ api 模块动了签名时，记得同步改 `RigidPhysicsApiImpl.API_VERSION`
 
 插件本体刻意不进 Maven 仓库，两个理由任一个都足够：它是可执行插件本体，依赖服务器上
 已安装的 packetevents 前置插件，无法脱离运行环境独立使用；且含三平台 native、体积数十 MB。
-详见 [THIRD_PARTY_NOTICES.md](https://github.com/GTedd/GTRigidPhysics/blob/main/THIRD_PARTY_NOTICES.md)。
+详见源码仓库根目录的 `THIRD_PARTY_NOTICES.md`。
 
 ---
 
 ## CI 为什么要「剥离本机专属构建配置」
 
-两个 workflow 里都有这一步：
+凡是要跑 Gradle 的 workflow（`build.yml`、`javadoc.yml`、`release.yml`）里都有这一步：
 
 ```bash
 sed -i '/^org\.gradle\.java\.home=/d' gradle.properties
