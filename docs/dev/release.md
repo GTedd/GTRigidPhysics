@@ -1,6 +1,6 @@
 # 发布流程
 
-本文写给维护者。日常发布只需要打一个 tag，其余全自动。
+本文写给维护者。发版打一个 tag 即可；**文档站与 Javadoc 要手动搬一次** —— 原因见下。
 
 ---
 
@@ -22,18 +22,28 @@ https://gtedd.github.io/GTRigidPhysics/javadoc/   API 文档
 https://gtedd.github.io/GTRigidPhysics/           Maven 仓库（同一个地址）
 ```
 
-CI 从私有仓库单向推向公开仓库。三条工作流各管一摊，共用 `gh-pages` 并发组排队：
+### 两边之间是手动搬的
 
-| 工作流 | 触发 | 往公开仓库写什么 |
+私有仓库的 CI **只做校验，不做发布**：
+
+| 工作流 | 触发 | 做什么 |
 |---|---|---|
-| `docs.yml` | 改了 `docs/**` 等 | 站点根路径 + 同步 `docs/` 到 `main` |
-| `javadoc.yml` | 改了 `*/src/main/java/**` 或译文覆盖层 | `javadoc/` |
-| `release.yml` | 打了 `v*` tag | 三者一起，外加 Maven 构件 `cn/` |
+| `build.yml` | 改了源码 | 编译、跑测试、校验 API 文档、验证发布产物可生成 |
+| `docs.yml` | 改了 `docs/**` 等 | 翻译结构校验 + 严格模式构建（死链会红） |
+| `javadoc.yml` | 改了 `*/src/main/java/**` 或译文覆盖层 | 译文覆盖层校验 + doclint + 生成聚合文档 |
+| `release.yml` | 打了 `v*` tag | 建 GitHub Release |
 
-!!! warning "文档源码是单向覆盖的"
+四条都把产物上传成 artifact，但**没有一条会往公开仓库推**。
 
-    公开仓库上合并的翻译 PR **必须先回流到私有仓库**，否则下一次
-    `docs.yml` 跑起来会把它抹掉。合了就立刻带回来，别攒着。
+!!! note "为什么不做成自动的"
+
+    跨仓库推送用不了 `GITHUB_TOKEN`（它只对当前仓库有权限），只能配一个 PAT。
+    那意味着把公开仓库的写权限以 secret 形式挂在组织仓库上 —— 组织成员的
+    Actions 权限边界比个人仓库复杂得多，为省几次手动操作不值得。
+
+    发布频率也支持这个选择：文档改动虽多，但**积攒着一次性发**完全够用。
+
+搬运步骤见下面的[手动发布文档站与 Javadoc](#manual-publish)。
 
 ---
 
@@ -49,36 +59,22 @@ git remote add origin https://github.com/HappyWithMin/GTRigidPhysics.git
 git push -u origin main
 ```
 
-公开仓库的 `main`（文档源码）与 `gh-pages`（构建产物）由 `docs.yml` 与
-`javadoc.yml` 自动维护，首次也可以手动推一份上去把站点先立起来。
+公开仓库的 `main`（文档源码）与 `gh-pages`（构建产物）手动推一份上去，
+之后按[手动发布](#manual-publish)那一节更新。
 
-若归属或仓库名有变，有**五处**要同步改：
+若归属或仓库名有变，有**四处**要同步改：
 
 | 位置 | 影响 |
 |---|---|
 | `gradle.properties` 的 `githubOwner` / `githubRepo` | POM 的 url/scm、发布落地页 |
 | `gradle.properties` 的 `copyrightHolder` | Javadoc 底栏、POM 的 developer。**与仓库归属刻意分开**，改它要同步改 `LICENSE-MIT` |
-| 三条工作流顶部的 `env.PUBLIC_REPO` | CI 往哪个仓库推 |
 | `mkdocs.yml` 的 `site_url` / `repo_url` / `nav` 里的 Javadoc 外链 | 文档站 |
 | `docs/index.md`、`README.md` 里的站点链接 | 首页与仓库主页 |
 
 第一二项是构建脚本读的变量，其余是字面量 —— 没有统一的注入机制，只能手改。
 改完跑一次 `mkdocs build --strict`，死链会被当场拦下。
 
-### 2. 配好跨仓库推送的令牌
-
-CI 要从私有仓库往公开仓库推，而 `GITHUB_TOKEN` 只对**当前**仓库有权限。
-所以需要一个 PAT：
-
-1. 建一个 fine-grained token，仓库范围选 `GTedd/GTRigidPhysics`，
-   权限给 **Contents: Read and write**
-2. 存进私有仓库的 **Settings → Secrets and variables → Actions**，
-   名字必须是 `PAGES_TOKEN`
-
-三条工作流都会在推送前检查它在不在，缺了会直接报错退出 —— 而不是跑到一半
-在 `git push` 那步抛一个看不懂的 403。
-
-### 3. 开启 GitHub Pages
+### 2. 开启 GitHub Pages
 
 在**公开**仓库 `GTedd/GTRigidPhysics` 的 **Settings → Pages**：
 
@@ -115,27 +111,79 @@ git push origin main --tags
 
 1. 用 tag 里的版本号构建（`-Pversion=1.0.1`）并跑测试；
 2. 建 GitHub Release，附上插件 jar、资源包 zip 与它的 SHA-1；
-3. 把 Maven 构件**追加**到 `gh-pages`（历史版本一直保留）；
-4. 把最新 Javadoc 覆盖到 `gh-pages/javadoc/`（含 `zh/`、`en/` 与语言选择落地页）；
-5. 重新构建文档站并覆盖 `gh-pages` 根路径（中文在 `/`，其余语言各占一层子目录）。
+3. 把 Maven 构件、Javadoc、文档站三份产物上传成 artifact。
+
+**第 3 步之后还要手动搬一次** —— 见下一节。工作流跑完会在日志里留一条
+notice 提醒，别漏掉：GitHub Release 建好了不等于文档站更新了。
 
 也可以在 Actions 页面手动触发 `发布` 工作流并填版本号，适合补发。
 
 ---
 
-## 文档站单独发布
+## 手动发布文档站与 Javadoc { #manual-publish }
 
-**改文档不需要发版。** `docs/**` 或 `mkdocs.yml` 一有改动推到 `main`，
-`docs.yml` 工作流就会重新构建并发布文档站 —— 改个错别字不该需要打一个 tag。
+私有仓库的 CI 只校验、不推送，所以线上那份要自己搬。一次性 clone 好公开仓库，
+之后每次重复第 3 步起即可。
 
-PR 阶段只验证能不能构建、不发布，否则任何人提 PR 都能改线上文档。
+```bash
+# 1. 本地生成产物
+bun run docs:build            # → site/          （严格模式，死链会失败）
+./gradlew aggregateJavadoc    # → build/docs/javadoc/{index.html,zh,en}
+
+# 2. clone 公开仓库（只需一次）
+git clone https://github.com/GTedd/GTRigidPhysics.git /tmp/pub
+
+# 3. 更新 gh-pages
+cd /tmp/pub && git checkout gh-pages
+#    清旧站点，但守住 cn/（Maven 构件）—— 见下面的警告
+find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name 'cn' ! -name 'javadoc' -exec rm -rf {} +
+cp -r <项目路径>/site/. .
+rm -rf javadoc && mkdir javadoc && cp -r <项目路径>/build/docs/javadoc/. javadoc/
+touch .nojekyll               # 不加这个 Jekyll 会吞掉下划线开头的目录
+git add -A && git commit -m "docs: 更新文档站与 Javadoc" && git push
+
+# 4. 同步文档源码到 main，让站上每页的「编辑本页」铅笔有地方可去
+cd /tmp/pub && git checkout main
+rm -rf docs hooks overrides tools mkdocs.yml requirements-docs.txt package.json
+cp -r <项目路径>/{docs,hooks,overrides} .
+mkdir -p tools && cp -r <项目路径>/tools/i18n tools/
+cp <项目路径>/{mkdocs.yml,requirements-docs.txt,package.json} .
+rm -rf docs/internal hooks/__pycache__      # 内部材料与字节码缓存不外发
+git add -A && git commit -m "docs: 同步文档源码" && git push
+```
+
+!!! danger "两个地方错了就会造成实际损害"
+
+    **`cn/` 只增不删。** 第 3 步那句 `find ... ! -name 'cn'` 不能省 ——
+    别人的项目正锁着旧版本，删掉就是把他们的构建打断。发 Maven 构件时也一样，
+    是把 `build/maven-repo/` **叠加**上去，不是替换。
+
+    **第 4 步是单向覆盖。** 公开仓库上合并的翻译 PR 必须先回流到私有仓库，
+    否则这一步会把它抹掉。合了就立刻带回来，别攒着。
+
+发版时的 Maven 构件多一步：
+
+```bash
+cd /tmp/pub && git checkout gh-pages
+cp -r <项目路径>/build/maven-repo/. .       # 叠加，不清空
+git add -A && git commit -m "发布 v1.0.1：Maven 构件" && git push
+```
+
+---
+
+## 文档站的日常改动
+
+**改文档不需要发版。** 推到 `main` 后 `docs.yml` 会校验翻译结构与死链，
+但**不会发布** —— 站点更新要走上面那节的手动步骤。
+
+好在文档改动可以**积攒着一次性发**：CI 已经保证了「能构建、没死链、译本结构没坏」，
+攒几次再搬不会积累风险。
 
 本地预览：
 
 ```bash
-pip install mkdocs-material jieba
-mkdocs serve            # → http://127.0.0.1:8000，改 md 自动热重载
-mkdocs build --strict   # 死链会让构建失败
+bun run docs           # → http://127.0.0.1:8000，改 md 自动热重载
+bun run docs:build     # 严格模式，死链会让构建失败
 ```
 
 !!! warning "jieba 不是可选依赖"
@@ -146,22 +194,20 @@ mkdocs build --strict   # 死链会让构建失败
 
 ### gh-pages 上的内容
 
-这个分支在**公开**仓库 `GTedd/GTRigidPhysics` 上，由私有仓库的三条工作流跨仓库推送。
+这个分支在**公开**仓库 `GTedd/GTRigidPhysics` 上，由维护者手动更新。
 
-| 路径 | 内容 | 更新策略 | 由谁维护 |
+| 路径 | 内容 | 更新策略 | 产物来自 |
 |---|---|---|---|
-| `/` | 文档站中文版（面向用户） | 整体替换 | `docs.yml` 与 `release.yml` |
+| `/` | 文档站中文版（面向用户） | 整体替换 | `bun run docs:build` → `site/` |
 | `/en/`、`/<lang>/` | 文档站各语言译本 | 整体替换 | 同上 |
 | `/llms.txt`、`/llms-full.txt`、`/export/` | Markdown 导出（译者与 agent 用） | 随站点一起 | 同上 |
-| `/javadoc/` | 语言选择落地页 | 整体替换 | `javadoc.yml` 与 `release.yml` |
+| `/javadoc/` | 语言选择落地页 | 整体替换 | `./gradlew aggregateJavadoc` |
 | `/javadoc/zh/`、`/javadoc/en/` | 各语言 API 文档（面向开发者） | 整体替换 | 同上 |
-| `/cn/gtedd/...` | Maven 构件 | **只增不删** | `release.yml` |
+| `/cn/gtedd/...` | Maven 构件 | **只增不删** | `./gradlew publishAllToStaging` |
 
 最后一条是硬约束：别人的项目正锁着旧版本，删掉就是把他们的构建打断。
-发布脚本用 `find ... ! -name cn ! -name javadoc -exec rm -rf` 逐项清理而不是
-`rm -rf` 整个目录，就是为了守住这两个目录 —— 改这段脚本时务必保持这个语义。
-
-`docs.yml`、`javadoc.yml` 与 `release.yml` 共用 `concurrency: gh-pages`，三者不会并发推送。
+所以清理时用 `find ... ! -name cn ! -name javadoc -exec rm -rf` 逐项删而不是
+`rm -rf` 整个目录 —— 照抄[上一节](#manual-publish)的命令就不会错。
 
 ---
 
@@ -219,7 +265,7 @@ wrapper 的 `distributionUrl` 指向阿里云镜像（开发机直连 gradle.org
 而 runner 在境外从阿里云拉发行包又慢又不稳。两边各用各的源。
 
 > ⚠ 升级 Gradle 时要**同时**改 `gradle-wrapper.properties` 的 `distributionUrl`
-> 和两个 workflow 里的 `gradle-version`。只改一处不会报错，只会让 CI 与本地跑在
+> 和三个 workflow 里的 `gradle-version`。只改一处不会报错，只会让 CI 与本地跑在
 > 不同版本上 —— 而这类不一致往往要到某个版本行为差异暴露时才被发现。
 
 ---
@@ -230,14 +276,15 @@ wrapper 的 `distributionUrl` 指向阿里云镜像（开发机直连 gradle.org
 |---|---|
 | CI 第一步就挂，报找不到 `D:\zulu25` | 剥离步骤没跑到，或新增了别的本机路径配置 |
 | 发出来的包版本还是 1.0.0 | `build.gradle.kts` 里 `version` 被硬编码了 —— 必须走 `projectVersion` 变量 |
-| gh-pages 上历史版本消失 | 发布脚本里的 `cp -r build/maven-repo/.` 被误改成了先清空目录 |
+| gh-pages 上历史版本消失 | 手动发布时清空了 `cn/` —— 它只增不删，必须叠加 |
 | Maven 仓库零星 404 | `gh-pages` 根缺 `.nojekyll`，Jekyll 吞掉了下划线开头的目录 |
 | 下游拉不到 `gtrigidphysics-common` | 查 api 的 POM 里依赖坐标是不是写成了 `cn.gtedd:common` |
 | Javadoc 任务报 `Input length = 1` | 用的是 Gradle 内置 `javadoc` 任务，应走 `javadocUtf8` / `aggregateJavadoc` |
 | `:api:javadocUtf8` 失败 | api 模块用 `-Xdoclint:all`，缺 `@param` 或坏 `{@link}` 都会红 —— 这是设计如此 |
-| 文档站构建报 link not found | `--strict` 拦下了死链。相对链接不能跑出 `docs/` 目录，指向仓库根文件要用 GitHub 绝对地址 |
+| 文档站构建报 link not found | `--strict` 拦下了死链。相对链接不能跑出 `docs/` 目录；指向构建期产物（zip、llms.txt）要用绝对 URL |
 | 文档站搜中文搜不到 | CI 的 `pip install` 里漏了 `jieba` |
-| 发布后文档站没了但 Maven 还在 | `find` 的 `! -name` 排除项被改坏了 |
+| 改完文档推上去了，线上却没变 | **正常** —— CI 只校验不发布，站点更新要走[手动发布](#manual-publish) |
+| 发布后文档站没了但 Maven 还在 | 手动发布时 `find` 的 `! -name` 排除项抄漏了 |
 
 ---
 
