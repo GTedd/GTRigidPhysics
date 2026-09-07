@@ -1,5 +1,5 @@
 ---
-i18n_source_sha: 21742a8d4cf2
+i18n_source_sha: aeeffe73cb81
 ---
 
 # Translating the Docs
@@ -271,6 +271,31 @@ English — but that isn't very friendly to readers of that language.
 ---
 
 ## Submitting
+
+### Which repository to open the PR against
+
+There are two copies of the documentation source:
+
+| Repository | Who can get in | What it is |
+|---|---|---|
+| [`GTedd/GTRigidPhysics`](https://github.com/GTedd/GTRigidPhysics) | Everyone | The public docs repository. The pencil on every page points here |
+| The plugin source repository | Team members | The source of truth for `docs/`, and where the Javadoc overlay lives |
+
+**Documentation translations go to the public one.** That is where the pencil button
+lands, and it needs no special access.
+
+**Javadoc translations can only be done in the source repository** — the overlay is
+compared byte for byte against the `.java` original, and those source files aren't in
+the public repository, so the check cannot run.
+
+!!! warning "For maintainers: port it back immediately after merging"
+
+    The public repository's `docs/` is **overwritten one-way** by CI in the source
+    repository. A PR merged in the public repository must be carried back to the
+    source repository promptly, or the next sync will wipe it out. Merge it, move it.
+    Don't let them pile up.
+
+### Commit messages
 
 Branch and commit conventions are in the [Contributing guide](contributing.md).
 Translation commits use the `docs` prefix with the language in parentheses:
