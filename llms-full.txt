@@ -11857,7 +11857,7 @@ MC 出新正式版时，逐项勾。**没勾完不合 main。**
 
 # 发布流程
 
-本文写给维护者。发版打一个 tag 即可；**文档站与 Javadoc 要手动搬一次** —— 原因见下。
+本文写给维护者。文档站已经自动化；**发版与 Javadoc 全部手动** —— 原因见下。
 
 ---
 
@@ -11868,7 +11868,7 @@ MC 出新正式版时，逐项勾。**没勾完不合 main。**
 
 | 仓库 | 可见性 | 放什么 |
 |---|---|---|
-| `HappyWithMin/GTRigidPhysics` | 私有 | 源码、CI、`docs/` 的**真相源** |
+| `HappyWithMin/GTRigidPhysics` | 私有 | 源码与 `docs/` 的**真相源**。不跑任何 CI |
 | `GTedd/GTRigidPhysics` | 公开 | `main` = 文档源码副本<br>`gh-pages` = 文档站 + Javadoc + Maven 构件 |
 
 发布出去的东西全在公开仓库那一侧：
@@ -11879,34 +11879,40 @@ https://gtedd.github.io/GTRigidPhysics/javadoc/   API 文档
 https://gtedd.github.io/GTRigidPhysics/           Maven 仓库（同一个地址）
 ```
 
-### 两边之间是手动搬的
+### 谁跑 CI，谁不跑
 
-私有仓库的 CI **只做校验，不做发布**：
+**私有仓库不跑任何 CI**，它只存源码。2026-09 删掉了原有的四条工作流 ——
+它们在这个组织仓库上持续失败并向维护者发通知，而排查要看 Actions 日志。
+本地等价命令当时全部通过，说明是 CI 环境特有的问题（组织对第三方 action
+的策略是最可能的原因，`setup-bun` 与 `setup-gradle` 都是第三方）。
 
-| 工作流 | 触发 | 做什么 |
-|---|---|---|
-| `build.yml` | 改了源码 | 编译、跑测试、校验 API 文档、验证发布产物可生成 |
-| `release.yml` | 打了 `v*` tag | 建 GitHub Release |
+**公开仓库自己发布文档站**：推到它的 `main` 就自动构建并更新 gh-pages。
+同仓库推送用自带的 `GITHUB_TOKEN` 就够，不需要任何 PAT。那条工作流
+（`.github/workflows/pages.yml`）刻意只用 GitHub 官方 action，把依赖面压到最小。
 
-两条都把产物上传成 artifact，但**没有一条会往公开仓库推**。
+于是分工是：
 
-曾经还有 `docs.yml`（文档站校验）与 `javadoc.yml`（Javadoc 校验）两条，
-2026-09 移除 —— 它们在这个组织仓库上持续失败并发通知，而排查要看
-Actions 日志。**文档相关的校验现在只在本地跑**：
+| 产物 | 怎么更新 |
+|---|---|
+| 文档站（`/`、`/en/`） | **自动** —— 把 `docs/` 同步到公开仓库 main 即可 |
+| Javadoc（`/javadoc/`） | 手动 —— 公开仓库里没有 Java 源码，只能本地生成再推 |
+| Maven 构件（`/cn/`） | 手动，且**只增不删** |
+| 插件 jar、资源包 | 手动 —— 本地构建，手动建 Release |
+
+**所有校验现在只在本地跑**：
 
 ```bash
-bun run check     # 翻译结构 + Javadoc 覆盖层 + 严格模式构建，一把梭
+bun run check                      # 翻译结构 + Javadoc 覆盖层 + 严格模式构建
+./gradlew build -PrunTests         # 编译与测试
 ```
 
-提交文档改动前跑它。少了 CI 兜底，这条命令就是唯一的门禁。
+提交前跑它们。少了 CI 兜底，这两条命令就是唯一的门禁。
 
-!!! note "为什么发布也不做成自动的"
+!!! warning "`bun run check` 要求 uv 在 Windows 全局 PATH 里"
 
-    跨仓库推送用不了 `GITHUB_TOKEN`（它只对当前仓库有权限），只能配一个 PAT。
-    那意味着把公开仓库的写权限以 secret 形式挂在组织仓库上 —— 组织成员的
-    Actions 权限边界比个人仓库复杂得多，为省几次手动操作不值得。
-
-    发布频率也支持这个选择：文档改动虽多，但**积攒着一次性发**完全够用。
+    不是只在 Git Bash 的 PATH 里 —— bun 起的是原生进程，看不到 Git Bash 补的那份，
+    会报 `command not found: uv`。把 `%USERPROFILE%\.local\bin` 加进用户 PATH 即可。
+    临时绕开：`uv run --with-requirements requirements-docs.txt mkdocs build --strict`。
 
 搬运步骤见下面的[手动发布文档站与 Javadoc](#manual-publish)。
 
@@ -11954,17 +11960,17 @@ git push -u origin main
 
 ## 日常发布
 
+没有发版工作流了，整条链路都在本地：
+
 ```bash
 # 1. 改版本号
-#    gradle.properties 里的 version 只是本地默认值，
-#    CI 用的是 tag，两者保持一致以免混淆
 vim gradle.properties
 
-# 2. 本地过一遍
-./gradlew build -PrunTests
-bun run javadoc:check             # 译文覆盖层是否还与原文代码一致
-./gradlew aggregateJavadoc        # 产出 build/docs/javadoc/{index.html,zh,en}
-./gradlew publishAllToStaging     # 产物在 build/maven-repo/
+# 2. 构建全部产物（-Pversion 覆盖 gradle.properties 里的默认值）
+./gradlew build -PrunTests -Pversion=1.0.1
+bun run javadoc:check                             # 译文覆盖层是否还与原文代码一致
+./gradlew aggregateJavadoc -Pversion=1.0.1        # → build/docs/javadoc/
+./gradlew publishAllToStaging -Pversion=1.0.1     # → build/maven-repo/
 
 # 3. 提交并打 tag
 git commit -am "chore: 发布 1.0.1"
@@ -11972,23 +11978,28 @@ git tag v1.0.1
 git push origin main --tags
 ```
 
-推 tag 之后 `release.yml` 会自动：
+打完 tag **什么都不会自动发生**。接下来手动做三件事：
 
-1. 用 tag 里的版本号构建（`-Pversion=1.0.1`）并跑测试；
-2. 建 GitHub Release，附上插件 jar、资源包 zip 与它的 SHA-1；
-3. 把 Maven 构件、Javadoc、文档站三份产物上传成 artifact。
+1. **建 GitHub Release** —— 在私有仓库的 Releases 页面新建，选刚推的 tag，
+   附上 `paper/build/libs/GTRigidPhysics-1.0.1.jar`、`build/distributions/` 下的
+   资源包 zip 与它的 `-sha1.txt`；
+2. **推 Maven 构件与 Javadoc** 到公开仓库的 gh-pages —— 见下一节；
+3. **同步 `docs/` 到公开仓库 main** —— 文档站会自己重新部署。
 
-**第 3 步之后还要手动搬一次** —— 见下一节。工作流跑完会在日志里留一条
-notice 提醒，别漏掉：GitHub Release 建好了不等于文档站更新了。
+!!! warning "版本号格式自己把关"
 
-也可以在 Actions 页面手动触发 `发布` 工作流并填版本号，适合补发。
+    原先有工作流校验 `v主.次.修` 的格式，现在没有了。
+    **版本号一旦推进 Maven 仓库就永久留在那里**，打 tag 前多看一眼。
 
 ---
 
 ## 手动发布文档站与 Javadoc { #manual-publish }
 
-私有仓库的 CI 只校验、不推送，所以线上那份要自己搬。一次性 clone 好公开仓库，
-之后每次重复第 3 步起即可。
+**文档站不用管**：把 `docs/` 同步到公开仓库 main（下面第 4 步），它会自己重新部署。
+要手动搬的是 **Javadoc** 和 **Maven 构件** —— 公开仓库里没有 Java 源码，
+生成不了它们。
+
+一次性 clone 好公开仓库，之后每次重复第 3 步起即可。
 
 ```bash
 # 1. 本地生成产物
@@ -12038,10 +12049,15 @@ git add -A && git commit -m "发布 v1.0.1：Maven 构件" && git push
 
 ## 文档站的日常改动
 
-**改文档不需要发版**，但也**不会自动上线** —— 站点更新要走上面那节的手动步骤。
+**改文档不需要发版。** 把改动同步到公开仓库的 `main`，它的 `pages.yml`
+就会重新构建并发布 —— 这条链路是自动的。
 
-文档改动可以积攒着一次性发。前提是每次提交前本地跑过 `bun run check`：
-它保证「能构建、没死链、译本结构没坏」，攒几次再搬才不会积累风险。
+但**私有仓库这边推了不算**：两个仓库之间没有任何自动同步，`docs/` 要自己搬过去
+（[手动发布](#manual-publish)那节的第 4 步）。
+
+同步前本地跑一次 `bun run check`。公开仓库那边只做 `mkdocs build --strict`，
+翻译结构与 Javadoc 覆盖层的校验它跑不了 —— 那是 TypeScript 写的，
+而那条工作流刻意不装 bun。
 
 本地预览：
 
@@ -12058,20 +12074,21 @@ bun run docs:build     # 严格模式，死链会让构建失败
 
 ### gh-pages 上的内容
 
-这个分支在**公开**仓库 `GTedd/GTRigidPhysics` 上，由维护者手动更新。
+这个分支在**公开**仓库 `GTedd/GTRigidPhysics` 上，三类内容更新方式不同：
 
-| 路径 | 内容 | 更新策略 | 产物来自 |
+| 路径 | 内容 | 谁更新 | 策略 |
 |---|---|---|---|
-| `/` | 文档站中文版（面向用户） | 整体替换 | `bun run docs:build` → `site/` |
-| `/en/`、`/<lang>/` | 文档站各语言译本 | 整体替换 | 同上 |
-| `/llms.txt`、`/llms-full.txt`、`/export/` | Markdown 导出（译者与 agent 用） | 随站点一起 | 同上 |
-| `/javadoc/` | 语言选择落地页 | 整体替换 | `./gradlew aggregateJavadoc` |
-| `/javadoc/zh/`、`/javadoc/en/` | 各语言 API 文档（面向开发者） | 整体替换 | 同上 |
-| `/cn/gtedd/...` | Maven 构件 | **只增不删** | `./gradlew publishAllToStaging` |
+| `/` | 文档站中文版（面向用户） | `pages.yml` **自动** | 整体替换 |
+| `/en/`、`/<lang>/` | 文档站各语言译本 | 同上 | 整体替换 |
+| `/llms.txt`、`/llms-full.txt`、`/export/` | Markdown 导出（译者与 agent 用） | 同上 | 随站点一起 |
+| `/javadoc/` | 语言选择落地页 | 维护者手动 | 整体替换 |
+| `/javadoc/zh/`、`/javadoc/en/` | 各语言 API 文档（面向开发者） | 维护者手动 | 整体替换 |
+| `/cn/gtedd/...` | Maven 构件 | 维护者手动 | **只增不删** |
 
 最后一条是硬约束：别人的项目正锁着旧版本，删掉就是把他们的构建打断。
-所以清理时用 `find ... ! -name cn ! -name javadoc -exec rm -rf` 逐项删而不是
-`rm -rf` 整个目录 —— 照抄[上一节](#manual-publish)的命令就不会错。
+`pages.yml` 清理站点时用 `find ... ! -name cn ! -name javadoc -exec rm -rf`
+逐项删而不是 `rm -rf` 整个目录，就是为了守住下面那三行 —— 改那段脚本时
+务必保持这个语义，手动推的时候也照抄[同一段命令](#manual-publish)。
 
 ---
 
@@ -12079,8 +12096,8 @@ bun run docs:build     # 严格模式，死链会让构建失败
 
 遵循[语义化版本](https://semver.org/lang/zh-CN/)，tag 格式 `v主.次.修`（可带预发布后缀）。
 
-工作流会校验格式，不合规直接失败 —— **版本号一旦发布就永久留在 Maven 仓库里**，
-校验在这里比事后清理便宜得多。
+**没有任何东西会校验这个格式** —— 原先那条校验随发版工作流一起删了。
+而版本号一旦推进 Maven 仓库就永久留在那里，所以打 tag 前自己看一眼。
 
 | 改动 | 该升哪一位 |
 |---|---|
@@ -12109,28 +12126,24 @@ api 模块动了签名时，记得同步改 `RigidPhysicsApiImpl.API_VERSION`
 
 ---
 
-## CI 为什么要「剥离本机专属构建配置」
+## 仓库里为什么留着本机专属的构建配置
 
-两个要跑 Gradle 的 workflow（`build.yml`、`release.yml`）里都有这一步：
+`gradle.properties` 与 `gradle-wrapper.properties` 里各有一处写死的本机路径：
 
-```bash
-sed -i '/^org\.gradle\.java\.home=/d' gradle.properties
-sed -i '/^javaHome=/d' gradle/wrapper/gradle-wrapper.properties
+```properties
+org.gradle.java.home=D:/zulu25        # gradle.properties
+javaHome=D:\zulu25                    # gradle/wrapper/gradle-wrapper.properties
 ```
 
-这两处都写死了 `D:\zulu25`，runner 上不存在，不删就是构建第一步直接挂。
-
 它们留在仓库里是刻意的：开发机路径含中文，那套配置有实测依据
-（见 `gradle.properties` 顶部注释），不该为了 CI 牺牲本地体验。
-**新增别的本机绝对路径配置时，记得同步更新这两个 workflow。**
+（见 `gradle.properties` 顶部注释），不该为了别的环境牺牲本地体验。
 
-同理，CI 用 `gradle/actions/setup-gradle` 直接装 Gradle 而不走 `./gradlew`：
-wrapper 的 `distributionUrl` 指向阿里云镜像（开发机直连 gradle.org 不通），
-而 runner 在境外从阿里云拉发行包又慢又不稳。两边各用各的源。
+原先四条工作流各有一步 `sed -i` 把它们剥掉 —— runner 上没有 `D:\zulu25`，
+不删就是构建第一步直接挂。**工作流现在都删了，这些路径也就再没人管**。
+以后要在别的机器上构建（或者恢复 CI），记得先处理这两行。
 
-> ⚠ 升级 Gradle 时要**同时**改 `gradle-wrapper.properties` 的 `distributionUrl`
-> 和两个 workflow 里的 `gradle-version`。只改一处不会报错，只会让 CI 与本地跑在
-> 不同版本上 —— 而这类不一致往往要到某个版本行为差异暴露时才被发现。
+同理，`distributionUrl` 指向阿里云镜像（开发机直连 gradle.org 不通）。
+换到境外机器构建时它会又慢又不稳，那边该改回官方源。
 
 ---
 
@@ -12138,7 +12151,7 @@ wrapper 的 `distributionUrl` 指向阿里云镜像（开发机直连 gradle.org
 
 | 现象 | 原因与处理 |
 |---|---|
-| CI 第一步就挂，报找不到 `D:\zulu25` | 剥离步骤没跑到，或新增了别的本机路径配置 |
+| 换台机器构建，报找不到 `D:\zulu25` | `gradle.properties` 与 wrapper 里的本机路径没处理，见上一节 |
 | 发出来的包版本还是 1.0.0 | `build.gradle.kts` 里 `version` 被硬编码了 —— 必须走 `projectVersion` 变量 |
 | gh-pages 上历史版本消失 | 手动发布时清空了 `cn/` —— 它只增不删，必须叠加 |
 | Maven 仓库零星 404 | `gh-pages` 根缺 `.nojekyll`，Jekyll 吞掉了下划线开头的目录 |
@@ -12160,7 +12173,7 @@ GitHub Pages 静态仓库的好处是零成本、零认证、下游一行 `maven
 1. 在 [Central Portal](https://central.sonatype.com/) 注册并验证 namespace
    —— 用 `cn.gtedd` 需要证明拥有 `gtedd.cn` 域名；没有域名可改用 `io.github.<用户名>`；
 2. 生成 GPG 密钥并把公钥推到公共密钥服务器；
-3. 在 `build.gradle.kts` 里加 `signing` 插件，密钥从 CI secrets 注入；
+3. 在 `build.gradle.kts` 里加 `signing` 插件，密钥从环境变量注入（别提交进仓库）；
 4. 把发布目标从本地 staging 目录改为 Central Portal 的上传端点。
 
 现有的 POM 元数据（name / description / url / licenses / developers / scm）

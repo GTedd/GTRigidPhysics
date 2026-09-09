@@ -3042,10 +3042,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#ci" class="md-nav__link">
     <span class="md-ellipsis">
       
-        两边之间是手动搬的
+        谁跑 CI，谁不跑
       
     </span>
   </a>
@@ -3058,7 +3058,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         一次性准备
@@ -3097,7 +3097,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         日常发布
@@ -3119,7 +3119,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         文档站的日常改动
@@ -3147,7 +3147,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         版本号规则
@@ -3158,7 +3158,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
       
         发布了什么，没发布什么
@@ -3169,10 +3169,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ci" class="md-nav__link">
+  <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CI 为什么要「剥离本机专属构建配置」
+        仓库里为什么留着本机专属的构建配置
       
     </span>
   </a>
@@ -3256,10 +3256,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#ci" class="md-nav__link">
     <span class="md-ellipsis">
       
-        两边之间是手动搬的
+        谁跑 CI，谁不跑
       
     </span>
   </a>
@@ -3272,7 +3272,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         一次性准备
@@ -3311,7 +3311,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         日常发布
@@ -3333,7 +3333,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         文档站的日常改动
@@ -3361,7 +3361,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         版本号规则
@@ -3372,7 +3372,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
       
         发布了什么，没发布什么
@@ -3383,10 +3383,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ci" class="md-nav__link">
+  <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CI 为什么要「剥离本机专属构建配置」
+        仓库里为什么留着本机专属的构建配置
       
     </span>
   </a>
@@ -3463,7 +3463,7 @@
 
 
 <h1 id="_1">发布流程<a class="headerlink" href="#_1" title="Permanent link">🔗</a></h1>
-<p>本文写给维护者。发版打一个 tag 即可；<strong>文档站与 Javadoc 要手动搬一次</strong> —— 原因见下。</p>
+<p>本文写给维护者。文档站已经自动化；<strong>发版与 Javadoc 全部手动</strong> —— 原因见下。</p>
 <hr />
 <h2 id="_2">先弄清楚：这个项目有两个仓库<a class="headerlink" href="#_2" title="Permanent link">🔗</a></h2>
 <p>源码仓库是<strong>私有</strong>的，而文档站要给所有人看 —— 私有仓库发不了免费的 GitHub Pages。
@@ -3480,7 +3480,7 @@
 <tr>
 <td><code>HappyWithMin/GTRigidPhysics</code></td>
 <td>私有</td>
-<td>源码、CI、<code>docs/</code> 的<strong>真相源</strong></td>
+<td>源码与 <code>docs/</code> 的<strong>真相源</strong>。不跑任何 CI</td>
 </tr>
 <tr>
 <td><code>GTedd/GTRigidPhysics</code></td>
@@ -3494,46 +3494,55 @@
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>https://gtedd.github.io/GTRigidPhysics/javadoc/   API 文档
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>https://gtedd.github.io/GTRigidPhysics/           Maven 仓库（同一个地址）
 </code></pre></div>
-<h3 id="_3">两边之间是手动搬的<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h3>
-<p>私有仓库的 CI <strong>只做校验，不做发布</strong>：</p>
+<h3 id="ci">谁跑 CI，谁不跑<a class="headerlink" href="#ci" title="Permanent link">🔗</a></h3>
+<p><strong>私有仓库不跑任何 CI</strong>，它只存源码。2026-09 删掉了原有的四条工作流 ——
+它们在这个组织仓库上持续失败并向维护者发通知，而排查要看 Actions 日志。
+本地等价命令当时全部通过，说明是 CI 环境特有的问题（组织对第三方 action
+的策略是最可能的原因，<code>setup-bun</code> 与 <code>setup-gradle</code> 都是第三方）。</p>
+<p><strong>公开仓库自己发布文档站</strong>：推到它的 <code>main</code> 就自动构建并更新 gh-pages。
+同仓库推送用自带的 <code>GITHUB_TOKEN</code> 就够，不需要任何 PAT。那条工作流
+（<code>.github/workflows/pages.yml</code>）刻意只用 GitHub 官方 action，把依赖面压到最小。</p>
+<p>于是分工是：</p>
 <table>
 <thead>
 <tr>
-<th>工作流</th>
-<th>触发</th>
-<th>做什么</th>
+<th>产物</th>
+<th>怎么更新</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>build.yml</code></td>
-<td>改了源码</td>
-<td>编译、跑测试、校验 API 文档、验证发布产物可生成</td>
+<td>文档站（<code>/</code>、<code>/en/</code>）</td>
+<td><strong>自动</strong> —— 把 <code>docs/</code> 同步到公开仓库 main 即可</td>
 </tr>
 <tr>
-<td><code>release.yml</code></td>
-<td>打了 <code>v*</code> tag</td>
-<td>建 GitHub Release</td>
+<td>Javadoc（<code>/javadoc/</code>）</td>
+<td>手动 —— 公开仓库里没有 Java 源码，只能本地生成再推</td>
+</tr>
+<tr>
+<td>Maven 构件（<code>/cn/</code>）</td>
+<td>手动，且<strong>只增不删</strong></td>
+</tr>
+<tr>
+<td>插件 jar、资源包</td>
+<td>手动 —— 本地构建，手动建 Release</td>
 </tr>
 </tbody>
 </table>
-<p>两条都把产物上传成 artifact，但<strong>没有一条会往公开仓库推</strong>。</p>
-<p>曾经还有 <code>docs.yml</code>（文档站校验）与 <code>javadoc.yml</code>（Javadoc 校验）两条，
-2026-09 移除 —— 它们在这个组织仓库上持续失败并发通知，而排查要看
-Actions 日志。<strong>文档相关的校验现在只在本地跑</strong>：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bun<span class="w"> </span>run<span class="w"> </span>check<span class="w">     </span><span class="c1"># 翻译结构 + Javadoc 覆盖层 + 严格模式构建，一把梭</span>
+<p><strong>所有校验现在只在本地跑</strong>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bun<span class="w"> </span>run<span class="w"> </span>check<span class="w">                      </span><span class="c1"># 翻译结构 + Javadoc 覆盖层 + 严格模式构建</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>./gradlew<span class="w"> </span>build<span class="w"> </span>-PrunTests<span class="w">         </span><span class="c1"># 编译与测试</span>
 </code></pre></div>
-<p>提交文档改动前跑它。少了 CI 兜底，这条命令就是唯一的门禁。</p>
-<div class="admonition note">
-<p class="admonition-title">为什么发布也不做成自动的</p>
-<p>跨仓库推送用不了 <code>GITHUB_TOKEN</code>（它只对当前仓库有权限），只能配一个 PAT。
-那意味着把公开仓库的写权限以 secret 形式挂在组织仓库上 —— 组织成员的
-Actions 权限边界比个人仓库复杂得多，为省几次手动操作不值得。</p>
-<p>发布频率也支持这个选择：文档改动虽多，但<strong>积攒着一次性发</strong>完全够用。</p>
+<p>提交前跑它们。少了 CI 兜底，这两条命令就是唯一的门禁。</p>
+<div class="admonition warning">
+<p class="admonition-title"><code>bun run check</code> 要求 uv 在 Windows 全局 PATH 里</p>
+<p>不是只在 Git Bash 的 PATH 里 —— bun 起的是原生进程，看不到 Git Bash 补的那份，
+会报 <code>command not found: uv</code>。把 <code>%USERPROFILE%\.local\bin</code> 加进用户 PATH 即可。
+临时绕开：<code>uv run --with-requirements requirements-docs.txt mkdocs build --strict</code>。</p>
 </div>
 <p>搬运步骤见下面的<a href="#manual-publish">手动发布文档站与 Javadoc</a>。</p>
 <hr />
-<h2 id="_4">一次性准备<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
+<h2 id="_3">一次性准备<a class="headerlink" href="#_3" title="Permanent link">🔗</a></h2>
 <p>以下几步只在<strong>第一次发布前</strong>做一次。</p>
 <h3 id="1">1. 建两个仓库并推代码<a class="headerlink" href="#1" title="Permanent link">🔗</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 私有仓库：源码</span>
@@ -3582,36 +3591,41 @@ Actions 权限边界比个人仓库复杂得多，为省几次手动操作不值
 <p>私有仓库的 GitHub Pages 需要付费方案 —— 这正是要分出一个公开仓库的原因。</p>
 </blockquote>
 <hr />
-<h2 id="_5">日常发布<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
+<h2 id="_4">日常发布<a class="headerlink" href="#_4" title="Permanent link">🔗</a></h2>
+<p>没有发版工作流了，整条链路都在本地：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># 1. 改版本号</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1">#    gradle.properties 里的 version 只是本地默认值，</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1">#    CI 用的是 tag，两者保持一致以免混淆</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>vim<span class="w"> </span>gradle.properties
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># 2. 本地过一遍</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>./gradlew<span class="w"> </span>build<span class="w"> </span>-PrunTests
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>bun<span class="w"> </span>run<span class="w"> </span>javadoc:check<span class="w">             </span><span class="c1"># 译文覆盖层是否还与原文代码一致</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>./gradlew<span class="w"> </span>aggregateJavadoc<span class="w">        </span><span class="c1"># 产出 build/docs/javadoc/{index.html,zh,en}</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>./gradlew<span class="w"> </span>publishAllToStaging<span class="w">     </span><span class="c1"># 产物在 build/maven-repo/</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1"># 3. 提交并打 tag</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>git<span class="w"> </span>commit<span class="w"> </span>-am<span class="w"> </span><span class="s2">"chore: 发布 1.0.1"</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>git<span class="w"> </span>tag<span class="w"> </span>v1.0.1
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main<span class="w"> </span>--tags
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>vim<span class="w"> </span>gradle.properties
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># 2. 构建全部产物（-Pversion 覆盖 gradle.properties 里的默认值）</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>./gradlew<span class="w"> </span>build<span class="w"> </span>-PrunTests<span class="w"> </span>-Pversion<span class="o">=</span><span class="m">1</span>.0.1
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>bun<span class="w"> </span>run<span class="w"> </span>javadoc:check<span class="w">                             </span><span class="c1"># 译文覆盖层是否还与原文代码一致</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>./gradlew<span class="w"> </span>aggregateJavadoc<span class="w"> </span>-Pversion<span class="o">=</span><span class="m">1</span>.0.1<span class="w">        </span><span class="c1"># → build/docs/javadoc/</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>./gradlew<span class="w"> </span>publishAllToStaging<span class="w"> </span>-Pversion<span class="o">=</span><span class="m">1</span>.0.1<span class="w">     </span><span class="c1"># → build/maven-repo/</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1"># 3. 提交并打 tag</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>git<span class="w"> </span>commit<span class="w"> </span>-am<span class="w"> </span><span class="s2">"chore: 发布 1.0.1"</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>git<span class="w"> </span>tag<span class="w"> </span>v1.0.1
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main<span class="w"> </span>--tags
 </code></pre></div>
-<p>推 tag 之后 <code>release.yml</code> 会自动：</p>
+<p>打完 tag <strong>什么都不会自动发生</strong>。接下来手动做三件事：</p>
 <ol>
-<li>用 tag 里的版本号构建（<code>-Pversion=1.0.1</code>）并跑测试；</li>
-<li>建 GitHub Release，附上插件 jar、资源包 zip 与它的 SHA-1；</li>
-<li>把 Maven 构件、Javadoc、文档站三份产物上传成 artifact。</li>
+<li><strong>建 GitHub Release</strong> —— 在私有仓库的 Releases 页面新建，选刚推的 tag，
+   附上 <code>paper/build/libs/GTRigidPhysics-1.0.1.jar</code>、<code>build/distributions/</code> 下的
+   资源包 zip 与它的 <code>-sha1.txt</code>；</li>
+<li><strong>推 Maven 构件与 Javadoc</strong> 到公开仓库的 gh-pages —— 见下一节；</li>
+<li><strong>同步 <code>docs/</code> 到公开仓库 main</strong> —— 文档站会自己重新部署。</li>
 </ol>
-<p><strong>第 3 步之后还要手动搬一次</strong> —— 见下一节。工作流跑完会在日志里留一条
-notice 提醒，别漏掉：GitHub Release 建好了不等于文档站更新了。</p>
-<p>也可以在 Actions 页面手动触发 <code>发布</code> 工作流并填版本号，适合补发。</p>
+<div class="admonition warning">
+<p class="admonition-title">版本号格式自己把关</p>
+<p>原先有工作流校验 <code>v主.次.修</code> 的格式，现在没有了。
+<strong>版本号一旦推进 Maven 仓库就永久留在那里</strong>，打 tag 前多看一眼。</p>
+</div>
 <hr />
 <h2 id="manual-publish">手动发布文档站与 Javadoc<a class="headerlink" href="#manual-publish" title="Permanent link">🔗</a></h2>
-<p>私有仓库的 CI 只校验、不推送，所以线上那份要自己搬。一次性 clone 好公开仓库，
-之后每次重复第 3 步起即可。</p>
+<p><strong>文档站不用管</strong>：把 <code>docs/</code> 同步到公开仓库 main（下面第 4 步），它会自己重新部署。
+要手动搬的是 <strong>Javadoc</strong> 和 <strong>Maven 构件</strong> —— 公开仓库里没有 Java 源码，
+生成不了它们。</p>
+<p>一次性 clone 好公开仓库，之后每次重复第 3 步起即可。</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># 1. 本地生成产物</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bun<span class="w"> </span>run<span class="w"> </span>docs:build<span class="w">            </span><span class="c1"># → site/          （严格模式，死链会失败）</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>./gradlew<span class="w"> </span>aggregateJavadoc<span class="w">    </span><span class="c1"># → build/docs/javadoc/{index.html,zh,en}</span>
@@ -3651,10 +3665,14 @@ notice 提醒，别漏掉：GitHub Release 建好了不等于文档站更新了�
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"发布 v1.0.1：Maven 构件"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>push
 </code></pre></div>
 <hr />
-<h2 id="_6">文档站的日常改动<a class="headerlink" href="#_6" title="Permanent link">🔗</a></h2>
-<p><strong>改文档不需要发版</strong>，但也<strong>不会自动上线</strong> —— 站点更新要走上面那节的手动步骤。</p>
-<p>文档改动可以积攒着一次性发。前提是每次提交前本地跑过 <code>bun run check</code>：
-它保证「能构建、没死链、译本结构没坏」，攒几次再搬才不会积累风险。</p>
+<h2 id="_5">文档站的日常改动<a class="headerlink" href="#_5" title="Permanent link">🔗</a></h2>
+<p><strong>改文档不需要发版。</strong> 把改动同步到公开仓库的 <code>main</code>，它的 <code>pages.yml</code>
+就会重新构建并发布 —— 这条链路是自动的。</p>
+<p>但<strong>私有仓库这边推了不算</strong>：两个仓库之间没有任何自动同步，<code>docs/</code> 要自己搬过去
+（<a href="#manual-publish">手动发布</a>那节的第 4 步）。</p>
+<p>同步前本地跑一次 <code>bun run check</code>。公开仓库那边只做 <code>mkdocs build --strict</code>，
+翻译结构与 Javadoc 覆盖层的校验它跑不了 —— 那是 TypeScript 写的，
+而那条工作流刻意不装 bun。</p>
 <p>本地预览：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bun<span class="w"> </span>run<span class="w"> </span>docs<span class="w">           </span><span class="c1"># → http://127.0.0.1:8000，改 md 自动热重载</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>bun<span class="w"> </span>run<span class="w"> </span>docs:build<span class="w">     </span><span class="c1"># 严格模式，死链会让构建失败</span>
@@ -3666,63 +3684,64 @@ notice 提醒，别漏掉：GitHub Release 建好了不等于文档站更新了�
 <code>mkdocs-material</code> 的 search 插件检测到 jieba 已安装会自动启用中文分词。</p>
 </div>
 <h3 id="gh-pages">gh-pages 上的内容<a class="headerlink" href="#gh-pages" title="Permanent link">🔗</a></h3>
-<p>这个分支在<strong>公开</strong>仓库 <code>GTedd/GTRigidPhysics</code> 上，由维护者手动更新。</p>
+<p>这个分支在<strong>公开</strong>仓库 <code>GTedd/GTRigidPhysics</code> 上，三类内容更新方式不同：</p>
 <table>
 <thead>
 <tr>
 <th>路径</th>
 <th>内容</th>
-<th>更新策略</th>
-<th>产物来自</th>
+<th>谁更新</th>
+<th>策略</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>/</code></td>
 <td>文档站中文版（面向用户）</td>
+<td><code>pages.yml</code> <strong>自动</strong></td>
 <td>整体替换</td>
-<td><code>bun run docs:build</code> → <code>site/</code></td>
 </tr>
 <tr>
 <td><code>/en/</code>、<code>/&lt;lang&gt;/</code></td>
 <td>文档站各语言译本</td>
-<td>整体替换</td>
 <td>同上</td>
+<td>整体替换</td>
 </tr>
 <tr>
 <td><code>/llms.txt</code>、<code>/llms-full.txt</code>、<code>/export/</code></td>
 <td>Markdown 导出（译者与 agent 用）</td>
-<td>随站点一起</td>
 <td>同上</td>
+<td>随站点一起</td>
 </tr>
 <tr>
 <td><code>/javadoc/</code></td>
 <td>语言选择落地页</td>
+<td>维护者手动</td>
 <td>整体替换</td>
-<td><code>./gradlew aggregateJavadoc</code></td>
 </tr>
 <tr>
 <td><code>/javadoc/zh/</code>、<code>/javadoc/en/</code></td>
 <td>各语言 API 文档（面向开发者）</td>
+<td>维护者手动</td>
 <td>整体替换</td>
-<td>同上</td>
 </tr>
 <tr>
 <td><code>/cn/gtedd/...</code></td>
 <td>Maven 构件</td>
+<td>维护者手动</td>
 <td><strong>只增不删</strong></td>
-<td><code>./gradlew publishAllToStaging</code></td>
 </tr>
 </tbody>
 </table>
 <p>最后一条是硬约束：别人的项目正锁着旧版本，删掉就是把他们的构建打断。
-所以清理时用 <code>find ... ! -name cn ! -name javadoc -exec rm -rf</code> 逐项删而不是
-<code>rm -rf</code> 整个目录 —— 照抄<a href="#manual-publish">上一节</a>的命令就不会错。</p>
+<code>pages.yml</code> 清理站点时用 <code>find ... ! -name cn ! -name javadoc -exec rm -rf</code>
+逐项删而不是 <code>rm -rf</code> 整个目录，就是为了守住下面那三行 —— 改那段脚本时
+务必保持这个语义，手动推的时候也照抄<a href="#manual-publish">同一段命令</a>。</p>
 <hr />
-<h2 id="_7">版本号规则<a class="headerlink" href="#_7" title="Permanent link">🔗</a></h2>
+<h2 id="_6">版本号规则<a class="headerlink" href="#_6" title="Permanent link">🔗</a></h2>
 <p>遵循<a href="https://semver.org/lang/zh-CN/">语义化版本</a>，tag 格式 <code>v主.次.修</code>（可带预发布后缀）。</p>
-<p>工作流会校验格式，不合规直接失败 —— <strong>版本号一旦发布就永久留在 Maven 仓库里</strong>，
-校验在这里比事后清理便宜得多。</p>
+<p><strong>没有任何东西会校验这个格式</strong> —— 原先那条校验随发版工作流一起删了。
+而版本号一旦推进 Maven 仓库就永久留在那里，所以打 tag 前自己看一眼。</p>
 <table>
 <thead>
 <tr>
@@ -3748,7 +3767,7 @@ notice 提醒，别漏掉：GitHub Release 建好了不等于文档站更新了�
 <p>api 模块动了签名时，记得同步改 <code>RigidPhysicsApiImpl.API_VERSION</code>
 —— 它是下游做能力判断的依据，与插件版本各自演进。</p>
 <hr />
-<h2 id="_8">发布了什么，没发布什么<a class="headerlink" href="#_8" title="Permanent link">🔗</a></h2>
+<h2 id="_7">发布了什么，没发布什么<a class="headerlink" href="#_7" title="Permanent link">🔗</a></h2>
 <table>
 <thead>
 <tr>
@@ -3789,23 +3808,18 @@ notice 提醒，别漏掉：GitHub Release 建好了不等于文档站更新了�
 已安装的 packetevents 前置插件，无法脱离运行环境独立使用；且含三平台 native、体积数十 MB。
 详见源码仓库根目录的 <code>THIRD_PARTY_NOTICES.md</code>。</p>
 <hr />
-<h2 id="ci">CI 为什么要「剥离本机专属构建配置」<a class="headerlink" href="#ci" title="Permanent link">🔗</a></h2>
-<p>两个要跑 Gradle 的 workflow（<code>build.yml</code>、<code>release.yml</code>）里都有这一步：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'/^org\.gradle\.java\.home=/d'</span><span class="w"> </span>gradle.properties
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'/^javaHome=/d'</span><span class="w"> </span>gradle/wrapper/gradle-wrapper.properties
+<h2 id="_8">仓库里为什么留着本机专属的构建配置<a class="headerlink" href="#_8" title="Permanent link">🔗</a></h2>
+<p><code>gradle.properties</code> 与 <code>gradle-wrapper.properties</code> 里各有一处写死的本机路径：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="na">org.gradle.java.home</span><span class="o">=</span><span class="s">D:/zulu25        # gradle.properties</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="na">javaHome</span><span class="o">=</span><span class="s">D:</span><span class="se">\z</span><span class="s">ulu25                    # gradle/wrapper/gradle-wrapper.properties</span>
 </code></pre></div>
-<p>这两处都写死了 <code>D:\zulu25</code>，runner 上不存在，不删就是构建第一步直接挂。</p>
 <p>它们留在仓库里是刻意的：开发机路径含中文，那套配置有实测依据
-（见 <code>gradle.properties</code> 顶部注释），不该为了 CI 牺牲本地体验。
-<strong>新增别的本机绝对路径配置时，记得同步更新这两个 workflow。</strong></p>
-<p>同理，CI 用 <code>gradle/actions/setup-gradle</code> 直接装 Gradle 而不走 <code>./gradlew</code>：
-wrapper 的 <code>distributionUrl</code> 指向阿里云镜像（开发机直连 gradle.org 不通），
-而 runner 在境外从阿里云拉发行包又慢又不稳。两边各用各的源。</p>
-<blockquote>
-<p>⚠ 升级 Gradle 时要<strong>同时</strong>改 <code>gradle-wrapper.properties</code> 的 <code>distributionUrl</code>
-和两个 workflow 里的 <code>gradle-version</code>。只改一处不会报错，只会让 CI 与本地跑在
-不同版本上 —— 而这类不一致往往要到某个版本行为差异暴露时才被发现。</p>
-</blockquote>
+（见 <code>gradle.properties</code> 顶部注释），不该为了别的环境牺牲本地体验。</p>
+<p>原先四条工作流各有一步 <code>sed -i</code> 把它们剥掉 —— runner 上没有 <code>D:\zulu25</code>，
+不删就是构建第一步直接挂。<strong>工作流现在都删了，这些路径也就再没人管</strong>。
+以后要在别的机器上构建（或者恢复 CI），记得先处理这两行。</p>
+<p>同理，<code>distributionUrl</code> 指向阿里云镜像（开发机直连 gradle.org 不通）。
+换到境外机器构建时它会又慢又不稳，那边该改回官方源。</p>
 <hr />
 <h2 id="_9">故障排查<a class="headerlink" href="#_9" title="Permanent link">🔗</a></h2>
 <table>
@@ -3817,8 +3831,8 @@ wrapper 的 <code>distributionUrl</code> 指向阿里云镜像（开发机直连
 </thead>
 <tbody>
 <tr>
-<td>CI 第一步就挂，报找不到 <code>D:\zulu25</code></td>
-<td>剥离步骤没跑到，或新增了别的本机路径配置</td>
+<td>换台机器构建，报找不到 <code>D:\zulu25</code></td>
+<td><code>gradle.properties</code> 与 wrapper 里的本机路径没处理，见上一节</td>
 </tr>
 <tr>
 <td>发出来的包版本还是 1.0.0</td>
@@ -3870,7 +3884,7 @@ wrapper 的 <code>distributionUrl</code> 指向阿里云镜像（开发机直连
 <li>在 <a href="https://central.sonatype.com/">Central Portal</a> 注册并验证 namespace
    —— 用 <code>cn.gtedd</code> 需要证明拥有 <code>gtedd.cn</code> 域名；没有域名可改用 <code>io.github.&lt;用户名&gt;</code>；</li>
 <li>生成 GPG 密钥并把公钥推到公共密钥服务器；</li>
-<li>在 <code>build.gradle.kts</code> 里加 <code>signing</code> 插件，密钥从 CI secrets 注入；</li>
+<li>在 <code>build.gradle.kts</code> 里加 <code>signing</code> 插件，密钥从环境变量注入（别提交进仓库）；</li>
 <li>把发布目标从本地 staging 目录改为 Central Portal 的上传端点。</li>
 </ol>
 <p>现有的 POM 元数据（name / description / url / licenses / developers / scm）
