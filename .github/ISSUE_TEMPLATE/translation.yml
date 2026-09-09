@@ -1,0 +1,94 @@
+# 翻译认领 / 报错的 issue 模板。
+#
+# 存在的意义主要是**防撞车**：两个人各花两小时翻同一页，谁都不好受。
+# 开一条 issue 说明要翻哪几页，比在 PR 里才发现重复要便宜得多。
+#
+# 表单是双语的 —— 会来翻译的人未必读得懂中文。
+name: 翻译 / Translation
+description: 认领要翻译的页面，或报告译文有问题 · Claim pages to translate, or report a translation issue
+title: "[i18n] "
+labels: ["i18n", "documentation"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢参与翻译！开工前请先读一遍[翻译文档](https://gtedd.github.io/GTRigidPhysics/dev/translating/)。
+
+        Thanks for helping translate! Please read the
+        [translation guide](https://gtedd.github.io/GTRigidPhysics/en/dev/translating/) first.
+
+        > 只是想改个错别字？不用开 issue —— 直接点页面右上角的铅笔提 PR 就行。
+        > Just fixing a typo? No issue needed — click the pencil on the page and open a PR.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 类型 · Type
+      options:
+        - 认领翻译 · Claiming pages to translate
+        - 同步已过期的译文 · Syncing an outdated translation
+        - 报告译文错误 · Reporting a translation error
+        - 申请新增一种语言 · Requesting a new language
+    validations:
+      required: true
+
+  - type: input
+    id: locale
+    attributes:
+      label: 语言 · Language
+      description: 两位小写代码，如 `en`、`ja`、`ko` · Two-letter lowercase code, e.g. `en`, `ja`, `ko`
+      placeholder: en
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: 翻哪一边 · Which surface
+      description: |
+        两边规则不同：文档站缺译本会自动回退中文；Javadoc 译本必须与原文代码逐字一致。
+        The two have different rules: docs fall back to Chinese when missing, while Javadoc
+        translations must match the original code byte for byte.
+      options:
+        - 文档站 · Documentation site (docs/**)
+        - Javadoc (i18n/javadoc/**)
+        - 两边都有 · Both
+    validations:
+      required: true
+
+  - type: textarea
+    id: pages
+    attributes:
+      label: 具体页面 / 文件 · Pages or files
+      description: |
+        一行一个，用仓库里的相对路径。跑 `bun run i18n:status` 或
+        `bun run javadoc:status` 能看到还缺什么。
+        One per line, as repository-relative paths. Run `bun run i18n:status` or
+        `bun run javadoc:status` to see what is missing.
+      placeholder: |
+        docs/guide/configuration.md
+        docs/systems/materials.md
+        cn/gtedd/rigidphysics/api/object/PhysicsBody.java
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: 补充说明 · Notes
+      description: |
+        报错的话请写清楚：哪一页、原文怎么说、译文怎么说、你认为该怎么改。
+        For a reported error, say which page, what the original says, what the translation
+        says, and what you think it should say.
+
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: 确认 · Acknowledgement
+      options:
+        - label: 我已读过翻译文档，并会遵守里面的术语表 · I have read the translation guide and will follow its glossary
+          required: true
+        - label: （若涉及 Javadoc）我明白译本只能改注释、不能动代码 · (Javadoc only) I understand translations may change comments but never code
+          required: false

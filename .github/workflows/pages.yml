@@ -1,0 +1,109 @@
+name: 文档站
+
+# 这个仓库自己构建、自己发布文档站 —— 同仓库推送，用自带的 GITHUB_TOKEN 就够，
+# 不需要任何 PAT。
+#
+# ## 为什么部署在这里而不是源码仓库
+#
+# 源码仓库是私有的，发不了免费的 GitHub Pages，所以对外的一切都落在这个公开仓库：
+#
+#   源码仓库（私有）   源码、`docs/` 的真相源
+#   本仓库（公开）     main = 文档源码副本；gh-pages = 文档站 + Javadoc + Maven 构件
+#
+# `docs/` 等文件由维护者从源码仓库单向覆盖同步过来，见 README。
+#
+# ## 只用 GitHub 官方 action
+#
+# 刻意不引入 oven-sh/setup-bun、gradle/actions 这类第三方 action：源码仓库那边的
+# 工作流用了它们之后在组织仓库上持续失败，原因一直没查清。这里把依赖面压到最小 ——
+# checkout 与 setup-python 两个官方 action，外加 pip 和 git。
+#
+# 代价是跑不了 `bun run i18n:check`（TypeScript 写的翻译结构校验）。那个改为
+# 在源码仓库本地跑，见 docs/dev/translating.md。这里只保证「站点能构建出来、没有死链」。
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      # 主题覆盖层与 hook 会改变每一页的产出，漏掉它们的话
+      # 改了横幅逻辑却不重新发布，线上就一直是旧版。
+      - 'overrides/**'
+      - 'hooks/**'
+      - 'requirements-docs.txt'
+      - '.github/workflows/pages.yml'
+  # 手动触发。同步完 docs/ 想立刻发布、或上面 paths 没覆盖到的改动，走这个。
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  # gh-pages 上还有 javadoc/ 与 cn/ 由维护者手动推。并发推送会互相覆盖，
+  # 结果是一个缺文件的站点或 Maven 仓库 —— 所以这里不取消排队中的任务，
+  # 让它们依次跑完。
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 构建并发布
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: 安装 MkDocs
+        # 依赖清单与本地 `bun run docs` 用的是同一份 requirements-docs.txt ——
+        # 分开写迟早会漂移，然后本地能构建、CI 挂，或者反过来。
+        # jieba 在里面，不能少：没有它中文不分词，站内搜索形同虚设。
+        run: pip install -r requirements-docs.txt
+
+      - name: 构建（严格模式）
+        # --strict 让死链变成构建失败。文档站的死链没有编译器兜底，
+        # 不在这里拦就只能等读者点到 404 才发现。
+        run: mkdocs build --strict
+
+      - name: 发布到 gh-pages
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin gh-pages:gh-pages
+          git worktree add /tmp/pages gh-pages
+
+          # 清掉旧站点，但**保留** cn/（Maven 构件）与 javadoc/（API 文档）。
+          # 这两者由维护者手动推，不归这个工作流管。
+          #
+          # ⚠ cn/ 是硬约束：别人的项目正锁着旧版本，删掉就是把他们的构建打断。
+          # 用 find 逐项删而不是 rm -rf 整个目录，就是为了守住这两个。
+          find /tmp/pages -mindepth 1 -maxdepth 1 \
+            ! -name '.git' ! -name 'cn' ! -name 'javadoc' \
+            -exec rm -rf {} +
+
+          cp -r site/. /tmp/pages/
+
+          # 不加这个文件，GitHub Pages 会用 Jekyll 处理站点，而 Jekyll
+          # **忽略下划线开头的目录** —— Maven 仓库会出现零星且毫无规律的 404。
+          touch /tmp/pages/.nojekyll
+
+          cd /tmp/pages
+          git add -A
+          if git diff --staged --quiet; then
+            echo "文档站无变更，跳过提交"
+          else
+            git commit -m "docs: 更新文档站（${SHA:0:7}）"
+            git push origin gh-pages
+            echo "文档站已发布：https://gtedd.github.io/GTRigidPhysics/"
+          fi

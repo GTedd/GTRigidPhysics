@@ -1,0 +1,16 @@
+# 保留「空白 issue」入口：模板只覆盖翻译这一类，
+# 把其余所有情况都堵死会逼人去别处提问，那反而更难跟进。
+blank_issues_enabled: true
+
+contact_links:
+  - name: 文档站 · Documentation
+    url: https://gtedd.github.io/GTRigidPhysics/
+    about: 安装、配置、各系统怎么运作 · Installation, configuration, how each system works
+
+  - name: API 参考 (Javadoc)
+    url: https://gtedd.github.io/GTRigidPhysics/javadoc/
+    about: 接口签名与契约，中英双语 · Interface signatures and contracts, in Chinese and English
+
+  - name: 翻译文档 · Translating the docs
+    url: https://gtedd.github.io/GTRigidPhysics/dev/translating/
+    about: 想帮忙翻译？从这里开始 · Want to help translate? Start here
